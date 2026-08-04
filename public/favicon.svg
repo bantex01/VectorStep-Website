@@ -1,15 +1,12 @@
-<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="15" cy="17" rx="9" ry="11" fill="#e5e7eb"/>
-  <ellipse cx="15" cy="17" rx="5.5" ry="7" fill="#f9fafb"/>
-  <ellipse cx="49" cy="17" rx="9" ry="11" fill="#e5e7eb"/>
-  <ellipse cx="49" cy="17" rx="5.5" ry="7" fill="#f9fafb"/>
-  <circle cx="32" cy="37" r="22" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
-  <circle cx="24" cy="32" r="3.2" fill="#111827"/>
-  <circle cx="40" cy="32" r="3.2" fill="#111827"/>
-  <circle cx="25.2" cy="30.8" r="1.1" fill="white"/>
-  <circle cx="41.2" cy="30.8" r="1.1" fill="white"/>
-  <ellipse cx="32" cy="45" rx="11" ry="7.5" fill="#e5e7eb" stroke="#d1d5db" stroke-width="0.8"/>
-  <circle cx="28" cy="45" r="2.4" fill="#6b7280"/>
-  <circle cx="36" cy="45" r="2.4" fill="#6b7280"/>
-  <path d="M26 52.5 Q32 57 38 52.5" stroke="#374151" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Quorate mark: four signal segments (S/V/G/D) form the ring; the mark is only
+       complete when all four are present. The tail — the deciding vote — carries
+       the Q. -->
+  <g stroke-linecap="round" stroke-width="6.5">
+    <path d="M20 12.68 A20 20 0 0 1 40 12.68" stroke="#a5b4fc"/>
+    <path d="M47.32 20 A20 20 0 0 1 47.32 40" stroke="#818cf8"/>
+    <path d="M40 47.32 A20 20 0 0 1 20 47.32" stroke="#6366f1"/>
+    <path d="M12.68 40 A20 20 0 0 1 12.68 20" stroke="#4f46e5"/>
+    <path d="M45.5 45.5 L54 54" stroke="#22d3ee"/>
+  </g>
 </svg>

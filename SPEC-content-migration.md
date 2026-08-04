@@ -34,6 +34,12 @@ Source material (read-only — never edit these repos):
 
 ## 2. Rules (do not re-litigate)
 
+0. **Naming: Quorate is the commercial brand; P-Ork is the open-source engine.**
+   Site chrome (nav, titles, landing page) says Quorate — already done, don't
+   touch it. Docs *content* keeps its P-Ork references as-is: the docs document
+   the engine, and the READMEs you are moving from use that name throughout.
+   Do not find-and-replace P-Ork → Quorate in migrated content.
+
 1. **Move, don't rewrite.** Prose is preserved near-verbatim. You may: fix
    heading levels, convert README `§`/anchor cross-references into relative
    page links, split one README section across the pages mapped below, and add

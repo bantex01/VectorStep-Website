@@ -6,10 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://p-ork.dev',
+  site: 'https://quorate.io',
   integrations: [
     starlight({
-      title: 'P-Ork',
+      title: 'Quorate',
       description:
         'Webhook-triggered, YAML-configured AI pipeline orchestration with confidence gating you can actually trust.',
       logo: { src: './public/favicon.svg' },
