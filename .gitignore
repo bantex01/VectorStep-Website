@@ -19,3 +19,7 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# demo instance runtime artefacts
+demo/logs/
+demo/artifacts/

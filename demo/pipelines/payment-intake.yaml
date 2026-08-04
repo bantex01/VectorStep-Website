@@ -1,0 +1,28 @@
+name: payment-intake
+description: Normalises inbound payment-provider webhooks and files structured order records
+version: 5
+stage: production
+
+trigger:
+  source: generic
+  match:
+    event_type: order_created
+
+steps:
+  - name: order-intake
+    executor: gateway
+    executor_config:
+      agent: order-intake
+    confidence_threshold: 0.70
+    on_low_confidence: escalate
+    prompt_template: |
+      New order event: {{payload.order_id}} from {{payload.channel}}.
+      Validate the order payload, enrich it with the customer record, and file
+      the structured order.
+
+      Respond with ONLY this JSON and nothing else:
+      {
+        "confidence": 0.0,
+        "summary": "One sentence: what was filed",
+        "order_ref": "ORD-<id>"
+      }

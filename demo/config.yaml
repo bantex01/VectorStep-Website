@@ -1,0 +1,28 @@
+server:
+  host: 127.0.0.1
+  port: 8300
+
+pipeline_config_dir: /Users/adalton/Development/github/P-Ork-Website/demo/pipelines
+step_library_dir: /Users/adalton/Development/github/P-Ork-Website/demo/steps
+
+database:
+  url: postgresql+asyncpg://adalton@localhost:5432/pork_demo
+
+executors: {}
+
+logging:
+  level: INFO
+  dir: /Users/adalton/Development/github/P-Ork-Website/demo/logs
+
+artifacts:
+  dir: /Users/adalton/Development/github/P-Ork-Website/demo/artifacts
+  retention_days: 7
+
+dedup:
+  enabled: true
+  window_seconds: 300
+
+calibration:
+  n_min: 20
+  bin_width: 0.1
+  cache_ttl_seconds: 30

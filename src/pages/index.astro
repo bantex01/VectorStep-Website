@@ -12,24 +12,24 @@ const GITHUB_URL = 'https://github.com'; // TODO: real repo URL when public
 
 const screenshots = [
   {
-    src: '/screenshots/trust-panel.png',
-    caption: 'Every gating decision explained — signal by signal, with the real numbers',
+    src: '/screenshots/trust-panel.jpg',
+    caption: 'Every gating decision explained — signal by signal, claim by claim, with the real numbers',
     label: 'Trust panel',
   },
   {
-    src: '/screenshots/calibration.png',
-    caption: 'Calibration bins: what "90% confident" actually meant, measured per agent and model',
+    src: '/screenshots/calibration.jpg',
+    caption: 'Calibration flags overconfidence in plain English — per agent, model and prompt version',
     label: 'Calibration',
   },
   {
-    src: '/screenshots/readiness.png',
-    caption: 'Promotion readiness: owner-defined criteria a pipeline must earn before production',
+    src: '/screenshots/readiness.jpg',
+    caption: 'Promotion readiness: evidence-based criteria a pipeline must earn before production',
     label: 'Readiness',
   },
   {
-    src: '/screenshots/dashboard.png',
-    caption: 'Live runs, escalations and accuracy across every pipeline',
-    label: 'Dashboard',
+    src: '/screenshots/runs.jpg',
+    caption: 'Every run with its team, duration and judged accuracy — filterable across pipelines and stages',
+    label: 'Runs',
   },
 ];
 
@@ -161,7 +161,7 @@ steps:
               <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
               <span id="shot-label" class="ml-3 rounded bg-gray-800 px-2 py-0.5 text-[11px] font-medium text-gray-400">{screenshots[0].label}</span>
             </div>
-            <div id="carousel" class="relative aspect-[16/10] w-full">
+            <div id="carousel" class="relative aspect-[1530/803] w-full">
               {screenshots.map((s, i) => (
                 <img
                   src={s.src}

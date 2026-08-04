@@ -1,0 +1,92 @@
+name: alert-triage-critical
+description: Critical-alert triage and investigation with full trust-vector gating on the investigation step
+version: 3
+stage: production
+
+trigger:
+  match:
+    severity: critical
+
+context_template:
+  include:
+    - severity
+    - labels.service
+    - labels.environment
+    - summary
+
+steps:
+  - name: first-line-triage
+    executor: gateway
+    executor_config:
+      agent: triage-agent
+    confidence_threshold: 0.60
+    on_low_confidence: escalate
+    prompt_template: |
+      Alert severity: {{severity}}
+      Service: {{labels.service}}
+      Environment: {{labels.environment}}
+      Summary: {{summary}}
+
+      Look up the service's runbook and ownership record, open a tracking
+      ticket, and produce a focused investigation brief for the next step.
+
+      Set confidence based on how completely you executed the tasks — did you
+      find the runbook, raise the ticket, and produce a useful brief?
+
+      Respond with ONLY this JSON and nothing else:
+      {
+        "confidence": 0.0,
+        "summary": "One sentence: what is happening and how serious",
+        "ticket": "OPS-<number>",
+        "next_step_context": "Focused investigation brief for the next step"
+      }
+
+  - name: sre-investigation
+    executor: gateway
+    timeout_seconds: 900
+    executor_config:
+      agent: sre-agent
+    confidence_threshold: 0.75
+    on_low_confidence: escalate
+    prompt_template: |
+      Alert severity: {{severity}}
+      Service: {{labels.service}}
+      Environment: {{labels.environment}}
+      Summary: {{summary}}
+
+      Triage summary: {{steps.first_line_triage.summary}}
+      Investigation brief: {{steps.first_line_triage.next_step_context}}
+      Ticket: {{steps.first_line_triage.ticket}}
+
+      Query the metrics backend for this service. Look at the alerting metric
+      and the full RED picture (Rate, Errors, Duration) plus saturation over
+      the last 60 minutes. Update the ticket with your findings.
+
+      Respond with ONLY this JSON and nothing else:
+      {
+        "confidence": 0.0,
+        "proceed": true,
+        "summary": "One sentence: what the data shows",
+        "findings": "Key metrics observed — specific values and timeframes",
+        "probable_cause": "Most likely explanation based on the data",
+        "next_step_context": "What a remediation agent should do"
+      }
+    verifier:
+      executor: gateway
+      executor_config:
+        agent: principal-sre
+      mode: critic
+      combination_strategy: veto
+      veto_floor: 0.60
+      trigger:
+        always: true
+    grounding:
+      enforce: true
+      max_trace_chars: 4000
+    calibration:
+      enforce: true
+      on_uncalibrated: proceed
+    deterministic_checks:
+      - name: alert-still-firing
+        type: shell
+        run: ./checks/alert-still-firing.sh {{labels.service}}

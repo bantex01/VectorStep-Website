@@ -1,0 +1,77 @@
+name: checkout-refund-agent
+description: Assesses disputed checkout charges and issues refunds within policy — building its production track record
+version: 2
+stage: testing
+
+trigger:
+  source: generic
+  match:
+    event_type: refund_requested
+
+readiness:
+  operational:
+    min_runs: 20
+    acceptable_statuses: [completed, escalated]
+    max_age_days: 30
+  confidence:
+    min_confidence: 0.80
+    min_runs: 10
+
+steps:
+  - name: assess-refund
+    executor: gateway
+    executor_config:
+      agent: refund-assessor
+    confidence_threshold: 0.70
+    on_low_confidence: escalate
+    prompt_template: |
+      Refund request for order {{payload.order_id}} — amount {{payload.amount}}.
+      Customer reason: {{payload.reason}}
+
+      Pull the order history, payment record and prior refund count for this
+      customer. Assess the claim against refund policy.
+
+      Respond with ONLY this JSON and nothing else:
+      {
+        "confidence": 0.0,
+        "summary": "One sentence assessment",
+        "within_policy": true,
+        "recommended_action": "refund_full | refund_partial | deny | escalate"
+      }
+
+  - name: issue-refund
+    executor: gateway
+    executor_config:
+      agent: refund-processor
+    confidence_threshold: 0.85
+    on_low_confidence: escalate
+    when: "{{ steps.assess_refund.within_policy }}"
+    readiness:
+      accuracy:
+        min_accuracy: 0.90
+        min_marked: 15
+        min_human_marked: 10
+      calibration:
+        n_min: 20
+        max_divergence: 0.10
+    prompt_template: |
+      Assessment: {{steps.assess_refund.summary}}
+      Recommended action: {{steps.assess_refund.recommended_action}}
+
+      Execute the recommended refund via the payments API and confirm the
+      resulting transaction id.
+
+      Respond with ONLY this JSON and nothing else:
+      {
+        "confidence": 0.0,
+        "summary": "What was refunded and why",
+        "transaction_id": "txn_<id>"
+      }
+    verifier:
+      executor: gateway
+      executor_config:
+        agent: refund-verifier
+      mode: independent
+      combination_strategy: minimum
+      trigger:
+        always: true
