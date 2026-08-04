@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://quorate.io',
+  site: 'https://quorate.cloud',
   integrations: [
     starlight({
       title: 'Quorate',
