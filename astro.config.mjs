@@ -13,7 +13,7 @@ export default defineConfig({
       description:
         'Webhook-triggered, YAML-configured AI pipeline orchestration with confidence gating you can actually trust.',
       logo: { src: './public/favicon.svg' },
-      favicon: '/favicon.svg',
+      favicon: '/favicon.svg?v=2',
       customCss: ['./src/styles/global.css'],
       social: [
         // TODO: point at the real GitHub org/repo once public
