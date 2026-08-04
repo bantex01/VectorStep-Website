@@ -1,0 +1,43 @@
+---
+title: P-Ork Documentation
+description: Webhook-triggered, YAML-configured AI pipeline orchestration with confidence gating you can actually trust.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+P-Ork is a **webhook-triggered, YAML-configured AI pipeline orchestration
+service**. It receives webhooks from any source (Alertmanager, Grafana,
+Atlassian, generic JSON), normalises the payload, resolves a named pipeline,
+and executes a multi-step AI pipeline using pluggable executor backends — with
+every autonomous action gated by a
+[trust vector](/docs/concepts/confidence/) built from independent signals.
+
+<CardGrid stagger>
+  <Card title="Quick start" icon="rocket">
+    Service + Gateway running with a first gated pipeline in about ten minutes.
+    [Get started →](/docs/getting-started/quick-start/)
+  </Card>
+  <Card title="Confidence & calibration" icon="approve-check">
+    The trust vector (S/V/G/D), calibration, and every knob that affects them —
+    read this before enforcing anything.
+    [Understand the model →](/docs/concepts/confidence/)
+  </Card>
+  <Card title="Pipeline authoring" icon="document">
+    The YAML schema: steps, verifiers, grounding, parallel groups, fan-out,
+    flow control, human-in-the-loop.
+    [Author pipelines →](/docs/pipelines/schema/)
+  </Card>
+  <Card title="Reference" icon="open-book">
+    REST APIs, the LLMOutput contract, config file references, MCP servers.
+    [Look it up →](/docs/reference/api/)
+  </Card>
+</CardGrid>
+
+## The ecosystem
+
+| Repo | Role |
+|---|---|
+| **P-Ork** | The orchestration service: webhook intake, pipeline runner, trust gating, UI, analytics |
+| **P-Ork-Gateway** | WebSocket gateway that runs agents: LLM providers, MCP tools, the full agentic loop |
+| **P-Ork-Service-MCP** | MCP server exposing pipeline authoring, run inspection and analytics to Claude Code/Desktop |
+| **P-Ork-Gateway-MCP** | MCP server for authoring and inspecting Gateway agents |

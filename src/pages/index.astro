@@ -1,0 +1,488 @@
+---
+// P-Ork marketing landing page — self-contained, dark-only, Tailwind utilities.
+// Docs live under /docs/ (Starlight). Console login is a placeholder until the
+// SaaS console exists — change CONSOLE_URL in one place.
+import { Code } from 'astro:components';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+
+const CONSOLE_URL = 'https://console.p-ork.dev'; // TODO: real console URL when SaaS lands
+const GITHUB_URL = 'https://github.com'; // TODO: real repo URL when public
+
+const screenshots = [
+  {
+    src: '/screenshots/trust-panel.png',
+    caption: 'Every gating decision explained — signal by signal, with the real numbers',
+    label: 'Trust panel',
+  },
+  {
+    src: '/screenshots/calibration.png',
+    caption: 'Calibration bins: what "90% confident" actually meant, measured per agent and model',
+    label: 'Calibration',
+  },
+  {
+    src: '/screenshots/readiness.png',
+    caption: 'Promotion readiness: owner-defined criteria a pipeline must earn before production',
+    label: 'Readiness',
+  },
+  {
+    src: '/screenshots/dashboard.png',
+    caption: 'Live runs, escalations and accuracy across every pipeline',
+    label: 'Dashboard',
+  },
+];
+
+const pipelineYaml = `name: alert-triage-critical
+description: Triage critical alerts, act only when trust survives every check
+trigger:
+  source: alertmanager
+  match: { severity: critical }
+
+steps:
+  - name: investigate
+    use: sre-investigation       # reusable step library
+    executor: gateway
+    agent: sre-agent
+    confidence_threshold: 0.75
+    on_low_confidence: escalate  # a human sees it instead
+
+    verifier:
+      mode: independent          # blind second agent
+      combination_strategy: minimum
+
+    grounding:
+      enforce: true              # claims need evidence
+
+    calibration:
+      enforce: true              # trust the track record
+      on_uncalibrated: escalate
+
+    deterministic_checks:
+      - type: shell              # still breaching, live?
+        command: ./checks/alert-still-firing.sh`;
+---
+
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P-Ork — AI pipelines that earn the right to act</title>
+    <meta
+      name="description"
+      content="Webhook-triggered, YAML-configured AI pipeline orchestration. Every autonomous action gated by verification, grounding, deterministic checks and the agent's own measured track record."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="bg-gray-950 text-gray-100 antialiased" style="font-family: 'Inter Variable', system-ui, sans-serif; margin: 0;">
+    <style is:global>
+      *, *::before, *::after { box-sizing: border-box; }
+      body { margin: 0; }
+      h1, h2, h3, p { margin: 0; }
+      .glow {
+        background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(99, 102, 241, 0.18), transparent 70%);
+      }
+      .grid-bg {
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 56px 56px;
+        mask-image: linear-gradient(to bottom, black 20%, transparent 85%);
+      }
+      .gradient-text {
+        background: linear-gradient(100deg, #a5b4fc, #6366f1 55%, #22d3ee);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .card-hover { transition: border-color 0.2s, transform 0.2s; }
+      .card-hover:hover { border-color: #4f46e5; transform: translateY(-2px); }
+      .expressive-code, .astro-code { font-family: 'JetBrains Mono Variable', monospace; }
+      .shot { transition: opacity 0.7s ease; }
+    </style>
+
+    <!-- ======================= Nav ======================= -->
+    <header class="sticky top-0 z-50 border-b border-gray-800/60 bg-gray-950/80 backdrop-blur-md">
+      <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
+        <a href="/" class="flex items-center gap-2.5 no-underline">
+          <img src="/favicon.svg" alt="" class="h-8 w-8" />
+          <span class="text-lg font-bold tracking-tight text-gray-50">P-Ork</span>
+        </a>
+        <div class="hidden items-center gap-7 text-sm font-medium text-gray-400 md:flex">
+          <a href="#trust" class="no-underline hover:text-gray-100" style="color: inherit;">How it works</a>
+          <a href="#calibration" class="no-underline hover:text-gray-100" style="color: inherit;">Calibration</a>
+          <a href="#config" class="no-underline hover:text-gray-100" style="color: inherit;">Configuration</a>
+          <a href="/docs/getting-started/quick-start/" class="no-underline hover:text-gray-100" style="color: inherit;">Docs</a>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href={GITHUB_URL} class="hidden text-sm font-medium text-gray-400 no-underline hover:text-gray-100 sm:block">GitHub</a>
+          <a
+            href={CONSOLE_URL}
+            class="rounded-md bg-accent-600 px-4 py-1.5 text-sm font-semibold text-white no-underline transition-colors hover:bg-accent-500"
+          >Console login</a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ======================= Hero ======================= -->
+    <section class="glow relative overflow-hidden">
+      <div class="grid-bg pointer-events-none absolute inset-0"></div>
+      <div class="relative mx-auto max-w-6xl px-6 pb-16 pt-20 text-center sm:pt-28">
+        <p class="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-accent-500/30 bg-accent-500/10 px-4 py-1 text-xs font-semibold tracking-wide text-accent-300">
+          <span class="h-1.5 w-1.5 rounded-full bg-accent-400"></span>
+          Production Prompt Orchestration
+        </p>
+        <h1 class="mx-auto max-w-3xl text-4xl font-extrabold leading-tight tracking-tight text-gray-50 sm:text-6xl">
+          AI pipelines that <span class="gradient-text">earn the right</span> to act
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-400">
+          P-Ork turns any webhook into a multi-step AI pipeline — and only lets a step act
+          autonomously when its confidence survives a second opinion, evidence checks,
+          hard deterministic facts, and its own measured track record.
+        </p>
+        <div class="mt-9 flex items-center justify-center gap-4">
+          <a
+            href="/docs/getting-started/quick-start/"
+            class="rounded-lg bg-accent-600 px-6 py-3 text-sm font-semibold text-white no-underline shadow-lg shadow-accent-600/25 transition-colors hover:bg-accent-500"
+          >Get started</a>
+          <a
+            href="/docs/concepts/confidence/"
+            class="rounded-lg border border-gray-700 bg-gray-900/60 px-6 py-3 text-sm font-semibold text-gray-200 no-underline transition-colors hover:border-gray-500"
+          >How trust is computed →</a>
+        </div>
+
+        <!-- Screenshot carousel -->
+        <div class="relative mx-auto mt-16 max-w-5xl">
+          <div class="absolute -inset-6 rounded-3xl bg-accent-600/10 blur-3xl"></div>
+          <figure class="relative overflow-hidden rounded-xl border border-gray-800 bg-gray-900 shadow-2xl" style="margin: 0;">
+            <div class="flex items-center gap-1.5 border-b border-gray-800 bg-gray-900 px-4 py-2.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+              <span id="shot-label" class="ml-3 rounded bg-gray-800 px-2 py-0.5 text-[11px] font-medium text-gray-400">{screenshots[0].label}</span>
+            </div>
+            <div id="carousel" class="relative aspect-[16/10] w-full">
+              {screenshots.map((s, i) => (
+                <img
+                  src={s.src}
+                  alt={s.caption}
+                  class="shot absolute inset-0 h-full w-full object-cover object-top"
+                  style={`opacity: ${i === 0 ? 1 : 0};`}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
+              ))}
+            </div>
+          </figure>
+          <p id="shot-caption" class="mt-4 text-sm text-gray-400">{screenshots[0].caption}</p>
+          <div class="mt-3 flex items-center justify-center gap-2">
+            {screenshots.map((s, i) => (
+              <button
+                class="dot h-1.5 rounded-full transition-all"
+                style={`border: none; cursor: pointer; padding: 0; width: ${i === 0 ? '1.5rem' : '0.75rem'}; background: ${i === 0 ? '#6366f1' : '#3f3f46'};`}
+                aria-label={`Show ${s.label}`}
+                data-index={i}
+              ></button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= Problem statement ======================= -->
+    <section class="border-t border-gray-800/60">
+      <div class="mx-auto max-w-6xl px-6 py-20 text-center">
+        <p class="mx-auto max-w-3xl text-2xl font-semibold leading-relaxed text-gray-200 sm:text-3xl">
+          An agent finishes a task and says <span class="text-accent-300">“I’m 95% confident.”</span><br />
+          <span class="text-gray-500">Should you believe it?</span>
+        </p>
+        <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-gray-400">
+          LLMs can be completely wrong and still sound calm, structured, and sure of themselves.
+          Confidence, as an agent reports it, is a <em>style of writing</em> as much as a measurement.
+          P-Ork never trusts one number — it builds a trust vector from independent signals and
+          gates every autonomous action on the <strong class="text-gray-200">weakest</strong> one. Not an average. The floor.
+        </p>
+      </div>
+    </section>
+
+    <!-- ======================= Trust vector ======================= -->
+    <section id="trust" class="border-t border-gray-800/60 bg-gray-900/40">
+      <div class="mx-auto max-w-6xl px-6 py-20">
+        <p class="text-sm font-semibold uppercase tracking-widest text-accent-400">The trust vector</p>
+        <h2 class="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">
+          Four independent signals. The weakest one decides.
+        </h2>
+        <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-500/15 text-lg font-bold text-accent-300">S</div>
+            <h3 class="mt-4 text-base font-semibold text-gray-100">Self-report</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              What the agent says about its own work. The starting point — and the least
+              trustworthy number in the whole system, treated accordingly.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/15 text-lg font-bold text-cyan-300">V</div>
+            <h3 class="mt-4 text-base font-semibold text-gray-100">Verifier</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              A second agent reviews the reasoning — or independently redoes the task, blind.
+              A verifier can lower confidence, never raise it. Consensus is not comfort.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-400/15 text-lg font-bold text-emerald-300">G</div>
+            <h3 class="mt-4 text-base font-semibold text-gray-100">Grounding</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Is every load-bearing claim backed by an actual tool call in the agent’s own
+              trace? Plausible-sounding prose doesn’t count. Evidence does.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-400/15 text-lg font-bold text-amber-300">D</div>
+            <h3 class="mt-4 text-base font-semibold text-gray-100">Deterministic checks</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Real commands, real queries, real approvals — no model in the loop. One failed
+              hard check forces trust to zero. No averaging. No partial credit.
+            </p>
+          </div>
+        </div>
+
+        <!-- Worked example: the weakest-link chain -->
+        <div class="mt-14 rounded-xl border border-gray-800 bg-gray-950 p-8">
+          <h3 class="text-lg font-semibold text-gray-100">A real gating decision, start to finish</h3>
+          <p class="mt-1 text-sm text-gray-500">Threshold 75% — the agent was “95% confident” the whole time.</p>
+          <div class="mt-8 flex flex-wrap items-center gap-x-2 gap-y-6">
+            <div class="flex flex-col items-center gap-1.5">
+              <span class="rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 font-mono text-lg font-bold text-gray-100">95%</span>
+              <span class="text-xs text-gray-500">self-report</span>
+            </div>
+            <span class="mb-5 text-gray-600">→</span>
+            <div class="flex flex-col items-center gap-1.5">
+              <span class="rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 font-mono text-lg font-bold text-gray-100">95%</span>
+              <span class="text-xs text-gray-500">verifier: 85%, above veto floor</span>
+            </div>
+            <span class="mb-5 text-gray-600">→</span>
+            <div class="flex flex-col items-center gap-1.5">
+              <span class="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 font-mono text-lg font-bold text-amber-300">62%</span>
+              <span class="text-xs text-gray-500">calibration: real track record</span>
+            </div>
+            <span class="mb-5 text-gray-600">→</span>
+            <div class="flex flex-col items-center gap-1.5">
+              <span class="rounded-lg border border-rose-500/40 bg-rose-500/10 px-4 py-2 font-mono text-lg font-bold text-rose-300">50%</span>
+              <span class="text-xs text-gray-500">grounding: evidence ceiling</span>
+            </div>
+            <span class="mb-5 text-gray-600">→</span>
+            <div class="flex flex-col items-center gap-1.5">
+              <span class="rounded-lg border border-accent-500/50 bg-accent-500/10 px-4 py-2 font-mono text-lg font-bold text-accent-300">escalate</span>
+              <span class="text-xs text-gray-500">50% &lt; 75% → a human decides</span>
+            </div>
+          </div>
+          <p class="mt-8 text-sm leading-relaxed text-gray-400">
+            Every step of this chain — with the exact numbers for that specific run — is visible in the
+            run’s Trust panel under <span class="font-medium text-gray-200">“How was this calculated?”</span>.
+            Nothing is a black box.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= Calibration ======================= -->
+    <section id="calibration" class="border-t border-gray-800/60">
+      <div class="mx-auto grid max-w-6xl items-center gap-14 px-6 py-20 lg:grid-cols-2">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-widest text-accent-400">Calibration</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">
+            Does “90% confident” actually mean 90%?
+          </h2>
+          <p class="mt-5 text-base leading-relaxed text-gray-400">
+            P-Ork bins every marked outcome per <span class="text-gray-200">agent, model, provider, prompt
+            version and agent version</span>, then measures what each confidence band was actually worth.
+            If an agent says 90% but its history at that level is 67% — you’ll see it, in plain English,
+            before it ever bites you.
+          </p>
+          <ul class="mt-6 space-y-3 text-sm text-gray-400" style="list-style: none; padding: 0;">
+            <li class="flex gap-3"><span class="mt-0.5 text-accent-400">✓</span> Advisory by default — watch for weeks with zero risk to behaviour</li>
+            <li class="flex gap-3"><span class="mt-0.5 text-accent-400">✓</span> Opt-in enforcement replaces the guess with the measured fact</li>
+            <li class="flex gap-3"><span class="mt-0.5 text-accent-400">✓</span> Editing a prompt or agent starts a fresh bucket — history never silently pools</li>
+            <li class="flex gap-3"><span class="mt-0.5 text-accent-400">✓</span> Bins only trusted once they earn enough marked samples</li>
+          </ul>
+        </div>
+        <!-- Mini calibration chart, pure CSS -->
+        <div class="rounded-xl border border-gray-800 bg-gray-900 p-6">
+          <p class="text-sm font-medium text-gray-300">sre-agent · claude-sonnet · confidence 90–100%</p>
+          <p class="mt-1 text-xs text-gray-500">31 marked runs in this band</p>
+          <div class="mt-6 space-y-5">
+            <div>
+              <div class="mb-1.5 flex justify-between text-xs"><span class="text-gray-400">What the agent predicted</span><span class="font-mono text-gray-300">~95%</span></div>
+              <div class="h-3 rounded-full bg-gray-800"><div class="h-3 rounded-full bg-gray-600" style="width: 95%;"></div></div>
+            </div>
+            <div>
+              <div class="mb-1.5 flex justify-between text-xs"><span class="text-gray-400">What actually happened</span><span class="font-mono text-amber-300">62%</span></div>
+              <div class="h-3 rounded-full bg-gray-800"><div class="h-3 rounded-full bg-amber-400/80" style="width: 62%;"></div></div>
+            </div>
+          </div>
+          <div class="mt-6 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3.5 text-sm text-amber-200">
+            Runs scoring ~90% here are only 62% correct — consider raising the threshold,
+            swapping the model, or enforcing grounding.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= Config-driven ======================= -->
+    <section id="config" class="border-t border-gray-800/60 bg-gray-900/40">
+      <div class="mx-auto grid max-w-6xl items-start gap-14 px-6 py-20 lg:grid-cols-2">
+        <div class="lg:sticky lg:top-24">
+          <p class="text-sm font-semibold uppercase tracking-widest text-accent-400">Config-driven</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">
+            The whole safety story is YAML you can read in review
+          </h2>
+          <p class="mt-5 text-base leading-relaxed text-gray-400">
+            No SDK, no DSL, no redeploy. Pipelines, reusable steps, verifiers, grounding,
+            calibration and hard checks are declarative config — versioned in git, hot-reloaded
+            on change, validated before a byte is written.
+          </p>
+          <ul class="mt-6 space-y-3 text-sm text-gray-400" style="list-style: none; padding: 0;">
+            <li class="flex gap-3"><span class="mt-0.5 text-accent-400">✓</span> Mix executors freely — Gateway agents, OpenClaw, humans, webhooks, sub-pipelines</li>
+            <li class="flex gap-3"><span class="mt-0.5 text-accent-400">✓</span> Parallel groups and dynamic fan-out over discovered work</li>
+            <li class="flex gap-3"><span class="mt-0.5 text-accent-400">✓</span> Human-in-the-loop approvals via Telegram, Slack or Teams</li>
+            <li class="flex gap-3"><span class="mt-0.5 text-accent-400">✓</span> Testing → production stages, with promotion readiness measured, not guessed</li>
+          </ul>
+          <a href="/docs/pipelines/schema/" class="mt-7 inline-block text-sm font-semibold text-accent-300 no-underline hover:text-accent-200">
+            Read the pipeline schema docs →
+          </a>
+        </div>
+        <div class="overflow-hidden rounded-xl border border-gray-800 shadow-2xl">
+          <div class="flex items-center gap-2 border-b border-gray-800 bg-gray-900 px-4 py-2.5">
+            <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+            <span class="ml-2 font-mono text-[11px] text-gray-500">pipelines/alert-triage-critical.yaml</span>
+          </div>
+          <Code code={pipelineYaml} lang="yaml" theme="vesper" class="!m-0 !rounded-none !border-0 text-[13px] leading-relaxed" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= Insight / operate ======================= -->
+    <section class="border-t border-gray-800/60">
+      <div class="mx-auto max-w-6xl px-6 py-20">
+        <p class="text-sm font-semibold uppercase tracking-widest text-accent-400">Operate with evidence</p>
+        <h2 class="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">
+          Every question you’d ask in an incident review, answerable with data
+        </h2>
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Which model actually performs?</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Per-step breakdowns by agent, model and provider — success rate, tokens, latency
+              and judged accuracy, un-blended. “Did that prompt edit help?” has a diff and a number.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Is this pipeline ready for production?</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Owner-defined readiness criteria across four tiers — operational, confidence,
+              accuracy, calibration — judged against real evidence, with a guided builder that
+              previews any criteria change in ~300ms.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">What still needs a human mark?</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              A marking queue of every step lacking human accuracy feedback — the exact labels
+              calibration and readiness are built from. Live-tail any run while it happens.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= Integrations ======================= -->
+    <section class="border-t border-gray-800/60 bg-gray-900/40">
+      <div class="mx-auto max-w-6xl px-6 py-20 text-center">
+        <h2 class="text-2xl font-bold tracking-tight text-gray-50 sm:text-3xl">Source agnostic. Executor agnostic.</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-base text-gray-400">
+          Alertmanager, Grafana, Atlassian or any webhook in — Gateway agents, OpenClaw, humans,
+          webhooks and sub-pipelines out. Adding a parser or executor touches zero core logic.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+          {['Alertmanager', 'Grafana', 'Atlassian', 'Generic webhooks', 'Cron schedules', 'P-Ork Gateway', 'OpenClaw', 'Telegram', 'Slack', 'Teams', 'MCP', 'Prometheus', 'OpenTelemetry'].map((name) => (
+            <span class="rounded-full border border-gray-800 bg-gray-900 px-4 py-1.5 text-sm text-gray-300">{name}</span>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= CTA ======================= -->
+    <section class="glow border-t border-gray-800/60">
+      <div class="mx-auto max-w-6xl px-6 py-24 text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">
+          Stop trusting vibes. <span class="gradient-text">Start measuring trust.</span>
+        </h2>
+        <p class="mx-auto mt-4 max-w-xl text-base text-gray-400">
+          From first webhook to a gated, calibrated production pipeline — the quick start takes
+          about ten minutes.
+        </p>
+        <div class="mt-8 flex items-center justify-center gap-4">
+          <a href="/docs/getting-started/quick-start/" class="rounded-lg bg-accent-600 px-6 py-3 text-sm font-semibold text-white no-underline shadow-lg shadow-accent-600/25 transition-colors hover:bg-accent-500">Get started</a>
+          <a href={CONSOLE_URL} class="rounded-lg border border-gray-700 bg-gray-900/60 px-6 py-3 text-sm font-semibold text-gray-200 no-underline transition-colors hover:border-gray-500">Console login</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= Footer ======================= -->
+    <footer class="border-t border-gray-800/60">
+      <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-10 sm:flex-row">
+        <div class="flex items-center gap-2.5">
+          <img src="/favicon.svg" alt="" class="h-6 w-6" />
+          <span class="text-sm font-semibold text-gray-300">P-Ork</span>
+          <span class="text-sm text-gray-600">— Production Prompt Orchestration</span>
+        </div>
+        <div class="flex items-center gap-6 text-sm text-gray-500">
+          <a href="/docs/getting-started/quick-start/" class="no-underline hover:text-gray-300" style="color: inherit;">Docs</a>
+          <a href="/docs/concepts/confidence/" class="no-underline hover:text-gray-300" style="color: inherit;">Trust &amp; calibration</a>
+          <a href={GITHUB_URL} class="no-underline hover:text-gray-300" style="color: inherit;">GitHub</a>
+          <a href={CONSOLE_URL} class="no-underline hover:text-gray-300" style="color: inherit;">Console</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Hero screenshot carousel: crossfade every 5s, dots jump, pause on hover.
+      const shots = document.querySelectorAll<HTMLImageElement>('#carousel .shot');
+      const dots = document.querySelectorAll<HTMLButtonElement>('.dot');
+      const caption = document.getElementById('shot-caption')!;
+      const label = document.getElementById('shot-label')!;
+      const carousel = document.getElementById('carousel')!;
+      let current = 0;
+      let timer: ReturnType<typeof setInterval>;
+
+      function show(i: number) {
+        current = i;
+        shots.forEach((img, j) => (img.style.opacity = j === i ? '1' : '0'));
+        dots.forEach((d, j) => {
+          d.style.width = j === i ? '1.5rem' : '0.75rem';
+          d.style.background = j === i ? '#6366f1' : '#3f3f46';
+        });
+        const img = shots[i];
+        caption.textContent = img.alt;
+        label.textContent = dots[i].getAttribute('aria-label')!.replace('Show ', '');
+      }
+
+      function start() {
+        timer = setInterval(() => show((current + 1) % shots.length), 5000);
+      }
+
+      dots.forEach((d) =>
+        d.addEventListener('click', () => {
+          clearInterval(timer);
+          show(Number(d.dataset.index));
+          start();
+        })
+      );
+      carousel.addEventListener('mouseenter', () => clearInterval(timer));
+      carousel.addEventListener('mouseleave', start);
+      start();
+    </script>
+  </body>
+</html>
