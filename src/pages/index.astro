@@ -76,9 +76,13 @@ steps:
   </head>
   <body class="bg-gray-950 text-gray-100 antialiased" style="font-family: 'Inter Variable', system-ui, sans-serif; margin: 0;">
     <style is:global>
-      *, *::before, *::after { box-sizing: border-box; }
-      body { margin: 0; }
-      h1, h2, h3, p { margin: 0; }
+      /* Must live in the `base` layer: unlayered rules would override Tailwind's
+         layered utilities (mx-auto, mt-*) on these same elements. */
+      @layer base {
+        *, *::before, *::after { box-sizing: border-box; }
+        body { margin: 0; }
+        h1, h2, h3, p { margin: 0; }
+      }
       .glow {
         background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(99, 102, 241, 0.18), transparent 70%);
       }
