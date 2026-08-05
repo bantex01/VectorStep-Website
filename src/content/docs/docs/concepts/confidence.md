@@ -1,12 +1,12 @@
 ---
 title: How confidence and calibration work
-description: How P-Ork decides how much to trust an agent's output — the trust vector, calibration, and every knob along the way.
+description: How VectorStep decides how much to trust an agent's output — the trust vector, calibration, and every knob along the way.
 sidebar:
   order: 1
   label: Confidence & the trust vector
 ---
 
-This is a plain-language explainer for how P-Ork decides how much to trust an
+This is a plain-language explainer for how VectorStep decides how much to trust an
 agent's output, and what every knob along the way actually does. If you want
 the precise technical reference (field names, config schemas, DB columns), see
 the [Reference](/docs/reference/api/) section — this page is for understanding
@@ -19,10 +19,10 @@ An agent finishes a task and says "I'm 95% confident." Should you believe it?
 LLMs are not naturally good at this. A model can be completely wrong and still
 say "95% confident" in a calm, well-structured sentence — confidence, as an
 agent reports it, is a *style* of writing as much as it is a real measurement.
-If P-Ork just trusted that number at face value, an overconfident wrong answer
+If VectorStep just trusted that number at face value, an overconfident wrong answer
 would sail straight through any gate you set.
 
-So instead of trusting one number, P-Ork builds up a **trust vector** — several
+So instead of trusting one number, VectorStep builds up a **trust vector** — several
 independent signals, combined conservatively — and only lets a step act
 automatically when the *weakest* one still clears the bar. Not an average. The
 floor.
@@ -137,7 +137,7 @@ the chain can push the trust above that ceiling.
 
 ### The truncation gotcha (a real, common source of false alarms)
 
-Both the trace-formatting step in P-Ork (`grounding.max_trace_chars`, default
+Both the trace-formatting step in VectorStep (`grounding.max_trace_chars`, default
 1500) and the Gateway that actually runs the tool calls
 (`limits.trace_tool_result_max_chars`, default 3000, overridable per-step via
 `executor_config.trace_max_chars`) cap how much of a tool result gets kept for
@@ -226,7 +226,10 @@ mechanism above is strictly additive and opt-in.
 Everything above assumes S, V, and G are each individually meaningful.
 Calibration is the mechanism that actually checks that assumption, per agent,
 per model, empirically — using this exact system's own history rather than
-trusting the number on its own terms.
+trusting the number on its own terms. This section is the plain-language
+version; [Calibration](/docs/pipelines/calibration/) is the technical
+reference for bucketing, labelling, binning, and the `calibration:` block's
+knobs.
 
 ### The core idea
 
@@ -280,7 +283,7 @@ config, including `soul.md`). Here's why, and what you'll actually see when it
 happens.
 
 **The bug this closes.** Before these existed, editing a step's prompt — or
-editing an agent's `soul.md` on the Gateway, which P-Ork had no visibility into
+editing an agent's `soul.md` on the Gateway, which VectorStep had no visibility into
 at all — silently kept counting outcomes from the OLD configuration as
 evidence for the NEW one. For a step with `calibration: {enforce: true}`, that
 meant the gate was making a real control decision using a measured accuracy
@@ -395,7 +398,7 @@ calculated?"**
 | `calibration.n_min` | service config.yaml | `20` | Marked outcomes a bin needs before it's trusted. |
 | `calibration.bin_width` | service config.yaml | `0.1` | Width of each confidence bucket. |
 | `prompt_hash` | derived, not configured | — | Content hash of the step's `prompt_template`. Part of every calibration bucket's key — editing the prompt starts a new bucket. |
-| `agent_version` | derived, not configured (Gateway-owned) | — | Content hash of the Gateway agent's full config incl. `soul.md`. Also part of every bucket's key — editing `agent.yaml`/`soul.md` on the Gateway resets calibration in P-Ork, even though nothing in P-Ork's own YAML changed. |
+| `agent_version` | derived, not configured (Gateway-owned) | — | Content hash of the Gateway agent's full config incl. `soul.md`. Also part of every bucket's key — editing `agent.yaml`/`soul.md` on the Gateway resets calibration in VectorStep, even though nothing in VectorStep's own YAML changed. |
 
 For the promotion-readiness knobs (`readiness.operational.*`,
 `readiness.confidence.*`, `readiness.accuracy.*`, `readiness.calibration.*`),
@@ -420,7 +423,7 @@ bucket — `prompt_hash` is computed from `prompt_template` **text only**, so
   **Prompt history** disclosure per step shows every recorded prompt version
   with its date range, run count, labelled count, and a diff against the
   version before it — "did that edit actually help?" made answerable with data.
-- **Agent detail → Versions tab:** every `agent_version` P-Ork has a snapshot
+- **Agent detail → Versions tab:** every `agent_version` VectorStep has a snapshot
   for, with a diff of `soul.md` against the version before it and the list of
   steps that version actually affected.
 - **Pipeline detail page, "Promotion readiness" card** (`stage: testing`

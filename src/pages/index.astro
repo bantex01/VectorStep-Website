@@ -1,6 +1,6 @@
 ---
-// Quorate marketing landing page — self-contained, dark-only, Tailwind utilities.
-// Quorate is the commercial brand; P-Ork is the open-source engine underneath.
+// VectorStep marketing landing page — self-contained, dark-only, Tailwind utilities.
+// VectorStep is the single brand — open-source engine and commercial SaaS alike.
 // Docs live under /docs/ (Starlight). Console login is a placeholder until the
 // SaaS console exists — change CONSOLE_URL in one place.
 import { Code } from 'astro:components';
@@ -8,7 +8,7 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 
-const CONSOLE_URL = 'https://console.quorate.cloud'; // TODO: real console URL when SaaS lands
+const CONSOLE_URL = 'https://console.vectorstep.io'; // TODO: real console URL when SaaS lands
 const GITHUB_URL = 'https://github.com'; // TODO: real repo URL when public
 
 const screenshots = [
@@ -68,7 +68,7 @@ steps:
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quorate — AI pipelines that earn the right to act</title>
+    <title>VectorStep — AI pipelines that earn the right to act</title>
     <meta
       name="description"
       content="Webhook-triggered, YAML-configured AI pipeline orchestration. Every autonomous action gated by verification, grounding, deterministic checks and the agent's own measured track record."
@@ -111,7 +111,7 @@ steps:
       <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
         <a href="/" class="flex items-center gap-2.5 no-underline">
           <img src="/favicon.svg" alt="" class="h-8 w-8" />
-          <span class="text-lg font-bold tracking-tight text-gray-50">Quorate</span>
+          <span class="text-lg font-bold tracking-tight text-gray-50">VectorStep</span>
         </a>
         <div class="hidden items-center gap-7 text-sm font-medium text-gray-400 md:flex">
           <a href="#trust" class="no-underline hover:text-gray-100" style="color: inherit;">How it works</a>
@@ -141,7 +141,7 @@ steps:
           AI pipelines that <span class="gradient-text">earn the right</span> to act
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-400">
-          Quorate turns any webhook into a multi-step AI pipeline — and only lets a step act
+          VectorStep turns any webhook into a multi-step AI pipeline — and only lets a step act
           autonomously when its confidence survives a second opinion, evidence checks,
           hard deterministic facts, and its own measured track record.
         </p>
@@ -203,7 +203,7 @@ steps:
         <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-gray-400">
           LLMs can be completely wrong and still sound calm, structured, and sure of themselves.
           Confidence, as an agent reports it, is a <em>style of writing</em> as much as a measurement.
-          Quorate never trusts one number — it builds a trust vector from independent signals and
+          VectorStep never trusts one number — it builds a trust vector from independent signals and
           gates every autonomous action on the <strong class="text-gray-200">weakest</strong> one. Not an average. The floor.
         </p>
       </div>
@@ -299,7 +299,7 @@ steps:
             Does “90% confident” actually mean 90%?
           </h2>
           <p class="mt-5 text-base leading-relaxed text-gray-400">
-            Quorate bins every marked outcome per <span class="text-gray-200">agent, model, provider, prompt
+            VectorStep bins every marked outcome per <span class="text-gray-200">agent, model, provider, prompt
             version and agent version</span>, then measures what each confidence band was actually worth.
             If an agent says 90% but its history at that level is 67% — you’ll see it, in plain English,
             before it ever bites you.
@@ -411,7 +411,7 @@ steps:
           webhooks and sub-pipelines out. Adding a parser or executor touches zero core logic.
         </p>
         <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
-          {['Alertmanager', 'Grafana', 'Atlassian', 'Generic webhooks', 'Cron schedules', 'P-Ork Gateway', 'OpenClaw', 'Telegram', 'Slack', 'Teams', 'MCP', 'Prometheus', 'OpenTelemetry'].map((name) => (
+          {['Alertmanager', 'Grafana', 'Atlassian', 'Generic webhooks', 'Cron schedules', 'VectorStep Gateway', 'OpenClaw', 'Telegram', 'Slack', 'Teams', 'MCP', 'Prometheus', 'OpenTelemetry'].map((name) => (
             <span class="rounded-full border border-gray-800 bg-gray-900 px-4 py-1.5 text-sm text-gray-300">{name}</span>
           ))}
         </div>
@@ -440,9 +440,9 @@ steps:
       <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-10 sm:flex-row">
         <div class="flex items-center gap-2.5">
           <img src="/favicon.svg" alt="" class="h-6 w-6" />
-          <span class="text-sm font-semibold text-gray-300">Quorate</span>
+          <span class="text-sm font-semibold text-gray-300">VectorStep</span>
           <span class="hidden items-center gap-1.5 text-sm text-gray-600 sm:inline-flex">
-            — built on the open-source <a href={GITHUB_URL} class="inline-flex items-center gap-1 text-gray-500 no-underline hover:text-gray-300">P-Ork engine <img src="/pork-mascot.svg" alt="" class="h-4 w-4" /></a>
+            — <a href={GITHUB_URL} class="inline-flex items-center gap-1 text-gray-500 no-underline hover:text-gray-300">open source at its core</a>
           </span>
         </div>
         <div class="flex items-center gap-6 text-sm text-gray-500">

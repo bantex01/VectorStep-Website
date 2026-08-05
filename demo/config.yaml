@@ -2,20 +2,20 @@ server:
   host: 127.0.0.1
   port: 8300
 
-pipeline_config_dir: /Users/adalton/Development/github/P-Ork-Website/demo/pipelines
-step_library_dir: /Users/adalton/Development/github/P-Ork-Website/demo/steps
+pipeline_config_dir: /Users/adalton/Development/github/VectorStep-Website/demo/pipelines
+step_library_dir: /Users/adalton/Development/github/VectorStep-Website/demo/steps
 
 database:
-  url: postgresql+asyncpg://adalton@localhost:5432/pork_demo
+  url: postgresql+asyncpg://adalton@localhost:5432/vectorstep_demo
 
 executors: {}
 
 logging:
   level: INFO
-  dir: /Users/adalton/Development/github/P-Ork-Website/demo/logs
+  dir: /Users/adalton/Development/github/VectorStep-Website/demo/logs
 
 artifacts:
-  dir: /Users/adalton/Development/github/P-Ork-Website/demo/artifacts
+  dir: /Users/adalton/Development/github/VectorStep-Website/demo/artifacts
   retention_days: 7
 
 dedup:

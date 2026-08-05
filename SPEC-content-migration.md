@@ -10,7 +10,7 @@ touch them except where this spec says so.
 
 ## 1. Context
 
-This repo is the P-Ork marketing site + docs (Astro + Starlight, static output).
+This repo is the VectorStep marketing site + docs (Astro + Starlight, static output).
 The docs content currently consists of:
 
 - **Three finished exemplar pages** — study these before writing anything, they
@@ -26,19 +26,19 @@ Source material (read-only — never edit these repos):
 
 | Source | Path | Size |
 |---|---|---|
-| P-Ork README | `/Users/adalton/Development/github/P-Ork/README.md` | 2,887 lines |
-| Confidence explainer | `/Users/adalton/Development/github/P-Ork/CONFIDENCE-EXPLAINED.md` | already migrated → `concepts/confidence.md` |
-| Gateway README | `/Users/adalton/Development/github/P-Ork-Gateway/README.md` | 731 lines |
-| Service MCP README | `/Users/adalton/Development/github/P-Ork-Service-MCP/README.md` | ~230 lines |
-| Gateway MCP README | `/Users/adalton/Development/github/P-Ork-Gateway-MCP/README.md` | ~240 lines |
+| VectorStep README | `/Users/adalton/Development/github/VectorStep/README.md` | 2,887 lines |
+| Confidence explainer | `/Users/adalton/Development/github/VectorStep/CONFIDENCE-EXPLAINED.md` | already migrated → `concepts/confidence.md` |
+| Gateway README | `/Users/adalton/Development/github/VectorStep-Gateway/README.md` | 731 lines |
+| Service MCP README | `/Users/adalton/Development/github/VectorStep-Service-MCP/README.md` | ~230 lines |
+| Gateway MCP README | `/Users/adalton/Development/github/VectorStep-Gateway-MCP/README.md` | ~240 lines |
 
 ## 2. Rules (do not re-litigate)
 
-0. **Naming: Quorate is the commercial brand; P-Ork is the open-source engine.**
-   Site chrome (nav, titles, landing page) says Quorate — already done, don't
-   touch it. Docs *content* keeps its P-Ork references as-is: the docs document
+0. **Naming: VectorStep is the commercial brand; VectorStep is the open-source engine.**
+   Site chrome (nav, titles, landing page) says VectorStep — already done, don't
+   touch it. Docs *content* keeps its VectorStep references as-is: the docs document
    the engine, and the READMEs you are moving from use that name throughout.
-   Do not find-and-replace P-Ork → Quorate in migrated content.
+   Do not find-and-replace VectorStep → VectorStep in migrated content.
 
 1. **Move, don't rewrite.** Prose is preserved near-verbatim. You may: fix
    heading levels, convert README `§`/anchor cross-references into relative
@@ -61,7 +61,7 @@ Source material (read-only — never edit these repos):
    (samples, fixtures, tests) are written as inline code paths, not links.
 6. **Do not touch:** `src/pages/index.astro` (landing page),
    `src/styles/global.css`, `public/screenshots/`, the three exemplar pages.
-7. **Skip entirely:** the P-Ork README's "Mac Setup (current machine)" and
+7. **Skip entirely:** the VectorStep README's "Mac Setup (current machine)" and
    "OpenClaw Identity Files" sections (machine-specific, not product docs), and
    anything in `logs/`.
 8. Work through §3 in order, committing after each sidebar group with message
@@ -79,14 +79,14 @@ belongs to and note it in the final report.
 | Page | Source |
 |---|---|
 | `quick-start.md` | DONE (exemplar) |
-| `installation.md` (new) | P-Ork README "Development Setup" + "Running Tests"; Gateway README "Quick Start" (full version — quick-start.md has the abbreviated one). Include the SQLite-vs-Postgres note from "Database". |
+| `installation.md` (new) | VectorStep README "Development Setup" + "Running Tests"; Gateway README "Quick Start" (full version — quick-start.md has the abbreviated one). Include the SQLite-vs-Postgres note from "Database". |
 
 ### 3.2 Concepts (`docs/concepts/`)
 
 | Page | Source |
 |---|---|
 | `confidence.md` | DONE (exemplar) |
-| `architecture.md` (new) | P-Ork README "Project Overview", "Tech Stack", "Project Structure" (the tree can be trimmed to the top two levels), plus a prose walk-through of the flow: webhook → normalise → resolve → run steps → executors → Gateway → providers/MCP. Include a Mermaid diagram of that flow (Starlight renders ```mermaid fences via its default config — if the build disagrees, use a fenced text diagram instead and say so in your report). |
+| `architecture.md` (new) | VectorStep README "Project Overview", "Tech Stack", "Project Structure" (the tree can be trimmed to the top two levels), plus a prose walk-through of the flow: webhook → normalise → resolve → run steps → executors → Gateway → providers/MCP. Include a Mermaid diagram of that flow (Starlight renders ```mermaid fences via its default config — if the build disagrees, use a fenced text diagram instead and say so in your report). |
 | `stages.md` | README §3c "Pipeline Stages (testing vs production)" |
 | `readiness.md` | README "Promotion readiness (owner-defined criteria)" + "Criteria builder (guided UI)" + the `readiness.*` knob rows from CONFIDENCE-EXPLAINED §9 quick-reference table (copy those rows here; `concepts/confidence.md` links here for them). |
 
@@ -134,7 +134,7 @@ belongs to and note it in the final report.
 | `protocol.md` (new) | "WebSocket Protocol" — auth, agent request, trace event types, session keys, concurrency & cancellation |
 | `api.md` (new) | "REST Endpoints" + "/health response" + "Agent management endpoints" |
 | `operations.md` (new) | "Prometheus Metrics" (+ scrape config, PromQL examples) + "Environment Variables" + "Performance Notes" + "MCP Transport Notes" |
-| `pork-integration.md` (new) | "P-Ork Integration" + "Gateway MCP (agent authoring)" pointer |
+| `vectorstep-integration.md` (new) | "VectorStep Integration" + "Gateway MCP (agent authoring)" pointer |
 
 ### 3.7 Operations (`docs/operations/`)
 
@@ -151,7 +151,7 @@ belongs to and note it in the final report.
 |---|---|
 | `api.md` | README §15 "Management Endpoints" (the annotated endpoint list, formatted as endpoint-per-heading with the README's inline comments as prose) |
 | `analytics-api.md` (new) | README §15c "Pipeline/Step/Agent Read + Analytics Endpoints" |
-| `write-api.md` (new) | README §15d "Pipeline/Step Write, Validate, and Delete Endpoints" + §15e "The P-Ork Service MCP" (short section linking to `/docs/integrations/mcp/`) |
+| `write-api.md` (new) | README §15d "Pipeline/Step Write, Validate, and Delete Endpoints" + §15e "The VectorStep Service MCP" (short section linking to `/docs/integrations/mcp/`) |
 | `llm-output.md` (new) | README §5 "LLMOutput — The Step Contract" |
 | `config.md` (new) | The full annotated `samples/config.yaml.example` walk-through from "Service Configuration" (if that page and deployment.md would duplicate, deployment.md keeps the operational guidance and this page keeps the field-by-field reference; cross-link). |
 

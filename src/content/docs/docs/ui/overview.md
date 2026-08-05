@@ -1,17 +1,38 @@
 ---
 title: UI overview
-description: The P-Ork web UI — dashboard, runs, pipelines, marking queue, insights.
+description: The VectorStep web UI — dashboard, runs, pipelines, marking queue, insights.
 sidebar:
   order: 1
 ---
 
-:::caution[Content migration in progress]
-This section is being migrated from the P-Ork README ("UI" section). Until
-then, the README is the authoritative source.
-:::
+The web UI is served under `/ui` and provides the following pages:
 
-The web UI at `/ui` covers the full operating surface: a dashboard, run history
-and live-tailing run detail (with the Trust panel and agent trace), pipeline
-and step libraries, the approvals and marking queues, cron schedules, and eight
-Insights pages (overview, pipelines, steps, agents, models, providers, MCP,
-teams).
+| Page | Route | Description |
+|---|---|---|
+| Dashboard | `/ui/` | 24h run counts by status, success rate, pipeline activity, recent runs (production only, see [Pipeline stages](/docs/concepts/stages/)) — recent runs shows testing runs too, badged |
+| Runs | `/ui/runs` | Run history with status/pipeline/team/**stage** (`?stage=testing\|production`, see [Pipeline stages](/docs/concepts/stages/)) filters and a selectable time range (24h/7d/30d/all-time); stat cards (run count, success rate, escalated/failed, accuracy marked, accuracy %, tokens) are always scoped to production, independent of the stage filter; the list itself shows testing runs too, badged |
+| Run detail | `/ui/runs/{id}` | Full step breakdown with confidence bars, parsed output, verifier results, collapsible agent trace (gateway steps), collapsible run log, live tail for in-progress runs, **accuracy feedback widget**, and a **TESTING** badge when `stage=testing` — see [Run detail](/docs/ui/run-detail/) |
+| Approvals | `/ui/approvals` | Every pending `executor: human` approval, regardless of channel — a universal fallback so a team isn't stuck if their primary chat channel (Slack/Telegram) is unreachable. No standalone sidebar entry; reached via a pending-count badge next to **Runs** (only shown when the count is non-zero) |
+| Approval decision | `/ui/approvals/{token}` | Standalone page (no sidebar) reached via a direct token link — used by the Teams approval channel, which posts this link instead of an in-chat button since Teams interactive cards need a public Bot Framework callback endpoint this deployment doesn't expose. Approve/Reject decision buttons post back to this same route |
+| Pipelines | `/ui/pipelines` | All loaded pipelines with last-run status, run counts, per-pipeline agent badges (read from config), all-time success rate, avg tokens in/out per run, a **TESTING** badge per pipeline, and **tag** (`?tag=`) / **agent** (`?agent=`) filters; header stat cards and all per-pipeline rollups are scoped to production |
+| Pipeline detail | `/ui/pipelines/{name}` | Config summary, tags, stage badge, **Agents card** (every agent used by the pipeline — including verifier agents in critic or independent mode — with its role(s), the step(s) it's used in, and its live-configured model + fallback models fetched from the backend), **Promotion readiness card** (`stage: testing` pipelines only — per-step tier chips, provenance, and an "Observed (service defaults)" fallback for steps with no criteria configured — see [Promotion readiness](/docs/concepts/readiness/)) with a **Criteria builder** disclosure (guided, preview-only `readiness:` authoring), accuracy feedback summary bar (production only), recent runs (badged, all stages), YAML viewer, and **Run now** button (always runs regardless of stage) |
+| Pipeline accuracy | `/ui/pipelines/{name}/feedback` | Accuracy breakdown by pipeline configuration (see [Run detail — Accuracy feedback](/docs/ui/run-detail/#accuracy-feedback)) — summary cards and the config-fingerprint comparison are production only; the chronological "every marked run" table shows all stages, badged |
+| Marking queue | `/ui/marking-queue` | Cross-pipeline review queue of steps with no **human** accuracy feedback yet, grouped by pipeline then step, oldest first, with pipeline/team/stage (default `testing`) additive filters and stat cards (pipelines/runs/steps affected, marked coverage %) — see [Marking queue](/docs/ui/marking-queue/). Links out to `/ui/runs/{id}` to actually mark; nothing is markable from this page itself |
+| Steps | `/ui/steps` | Step library — all named steps with executor/agent, tags, pipeline usage, copy-ref button, a **tag filter** (`?tag=`), and a per-pipeline/agent/model breakdown table (runs, success rate, avg tokens) for steps with run history |
+| Agents | `/ui/agents` | Unified agent library across all executor backends, with per-agent step success rate, avg duration, avg tokens in/out per step, configured model + fallback models (gateway agents), which pipelines use each agent, and **executor**/**model** filters (`?executor=`/`?model=`, the latter matching either the primary or a fallback model) — see [Insights — Agent Library](/docs/ui/insights/#agent-library) |
+| MCP Tools | `/ui/mcp` | Live MCP tool/server registry — every tool's schema, and each server's running/pid/restart_count, fetched from the VectorStep Gateway's `GET /mcp/tools` and `GET /mcp/servers`. Config-and-schema browsing only; see [Insights — MCP](/docs/ui/insights/#insights-mcp) for call-usage analytics |
+| Schedules | `/ui/schedules` | Active cron schedules with next-run times |
+| Insights — Overview | `/ui/insights` | Run/failure/token/accuracy totals, runs by team, and MCP tool-use counts, over a selectable time range (24h/7d/30d/all-time) — production only |
+| Insights — Pipelines | `/ui/insights/pipelines` | Per-pipeline run/failure/duration/token totals, top-pipelines table, and a per-pipeline drilldown (status/accuracy breakdown, timeseries, recent runs, and a step/agent/model breakdown table) — production only |
+| Insights — Steps | `/ui/insights/steps` | Per-step run/failure/duration/token totals, top-steps table, and a per-step drilldown (status breakdown, timeseries, recent executions, and a pipeline/agent/model breakdown table) — production only |
+| Insights — Agents | `/ui/insights/agents` | Per-agent step/success-rate/duration/token totals, top-agents table, and a per-agent drilldown (status breakdown, timeseries, recent executions, and a pipeline/step/model breakdown table) — production only |
+| Insights — Models | `/ui/insights/models` | Per-model (provider-qualified) success-rate/duration/token totals, top-models table, and a per-model drilldown (status breakdown, timeseries, recent calls, and a pipeline/step/agent breakdown table) — production only, `executor: gateway` steps only |
+| Insights — Providers | `/ui/insights/providers` | Calls/success-rate/duration/token totals grouped by LLM provider (`anthropic`, `openrouter`, `azure`, etc.), top-providers table, and a per-provider drilldown — same drilldown shape as the other Insights pages. Folds in what used to be the standalone `/ui/providers` page (old links redirect here); unlike every other Insights page, this one falls back to a best-effort provider guess from the model string for pre-migration rows with no `provider` value, since the whole point of this page is provider bucketing — production only, `executor: gateway` steps only |
+| Insights — MCP | `/ui/insights/mcp` | Tool call usage extracted from the agent trace on `executor: gateway` steps (OpenClaw steps don't expose intermediate events) — calls/errors by tool and by server, a per-tool drilldown showing which pipelines/steps/agents call it, over a selectable time range — production only |
+| Insights — Teams | `/ui/insights/teams` | Per-team run/success-rate/duration/token totals, top-teams table, and a per-team drilldown giving a complete picture of what a team uses and where (pipelines used, and a pipeline/step/agent/model breakdown table) plus its token spend, for informed cost decisions. NULL team is bucketed as "Unattributed" — production only |
+
+See [Insights](/docs/ui/insights/) for a page-by-page walkthrough of the eight Insights pages, and [Marking queue](/docs/ui/marking-queue/) for the cross-pipeline review queue.
+
+## Running a pipeline manually
+
+Every pipeline detail page has a **Run now** button. This opens a modal where you can optionally set a summary and paste a full generic webhook payload (JSON). On submit it POSTs to `POST /pipelines/{name}/run` — a separate internal endpoint from the public `/webhook`, so it keeps working regardless of `auth.teams` configuration (no Bearer token required, and the run is unattributed). A banner appears with a link to the new run.

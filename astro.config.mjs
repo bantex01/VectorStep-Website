@@ -6,10 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://quorate.cloud',
+  site: 'https://vectorstep.io',
   integrations: [
     starlight({
-      title: 'Quorate',
+      title: 'VectorStep',
       description:
         'Webhook-triggered, YAML-configured AI pipeline orchestration with confidence gating you can actually trust.',
       logo: { src: './public/favicon.svg' },

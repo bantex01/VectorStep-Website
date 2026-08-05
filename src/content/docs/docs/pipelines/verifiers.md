@@ -31,7 +31,7 @@ corroboration) rather than an adversarial framing.
 transcript the same way `grounding.max_trace_chars` does — and the same
 truncation caveat applies: a claim whose evidence lands past the cutoff is
 invisible to the critic, and if the Gateway itself already truncated that tool
-result before P-Ork received it (`executor_config.trace_max_chars`), no amount
+result before VectorStep received it (`executor_config.trace_max_chars`), no amount
 of raising this setting recovers it. See
 [the truncation gotcha](/docs/concepts/confidence/#the-truncation-gotcha-a-real-common-source-of-false-alarms).
 
@@ -67,7 +67,7 @@ verifier:
 The verifier fires only when:
 `confidence_above < primary_confidence < confidence_below`.
 
-See `samples/pipelines/trust-vector-remediation.yaml` in the P-Ork repo for
+See `samples/pipelines/trust-vector-remediation.yaml` in the VectorStep repo for
 `critic` and `independent` used side by side — cheap corroboration on a step
 that only informs, versus blind corroboration on a step that authorises a side
 effect.

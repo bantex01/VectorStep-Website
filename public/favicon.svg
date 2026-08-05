@@ -1,12 +1,13 @@
 <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none">
-  <!-- Quorate mark: four signal segments (S/V/G/D) form the ring; the mark is only
-       complete when all four are present. The tail — the deciding vote — carries
-       the Q. -->
-  <g stroke-linecap="round" stroke-width="6.5">
-    <path d="M20 12.68 A20 20 0 0 1 40 12.68" stroke="#a5b4fc"/>
-    <path d="M47.32 20 A20 20 0 0 1 47.32 40" stroke="#818cf8"/>
-    <path d="M40 47.32 A20 20 0 0 1 20 47.32" stroke="#6366f1"/>
-    <path d="M12.68 40 A20 20 0 0 1 12.68 20" stroke="#4f46e5"/>
-    <path d="M45.5 45.5 L54 54" stroke="#22d3ee"/>
+  <!-- VectorStep mark: four signal beads (S/V/G/D) — the steps — descend the
+       left stroke; the rising cyan vector completes the V and reads as a tick.
+       The mark is only complete when all four signals are present. -->
+  <g stroke-linecap="round" stroke-width="6">
+    <path d="M15.5 15 L16.8 18.1" stroke="#a5b4fc"/>
+    <path d="M20.1 25.5 L21.4 28.6" stroke="#818cf8"/>
+    <path d="M24.7 36 L26 39.1" stroke="#6366f1"/>
+    <path d="M29.3 46.5 L32 52.7" stroke="#4f46e5"/>
+    <path d="M32 52.7 L48.2 22.1" stroke="#22d3ee"/>
   </g>
+  <path d="M52.8 13.5 L52.8 23.6 L44.4 19.2 Z" fill="#22d3ee" stroke="#22d3ee" stroke-width="2" stroke-linejoin="round"/>
 </svg>

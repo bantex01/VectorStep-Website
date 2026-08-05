@@ -1,16 +1,16 @@
-"""Seed the pork_demo database with realistic fictional run history.
+"""Seed the vectorstep_demo database with realistic fictional run history.
 
-Purpose: stage the P-Ork UI for the marketing-site screenshots (hero carousel)
-without touching the real `pork` database or spending LLM tokens. Everything the
+Purpose: stage the VectorStep UI for the marketing-site screenshots (hero carousel)
+without touching the real `vectorstep` database or spending LLM tokens. Everything the
 UI renders — trust panels, calibration bins, readiness card, dashboards — is
 computed from these rows by the real service code.
 
-Run with the P-Ork service venv, against the demo instance's DB:
+Run with the VectorStep service venv, against the demo instance's DB:
 
-    cd /Users/adalton/Development/github/P-Ork/service
-    .venv/bin/python /Users/adalton/Development/github/P-Ork-Website/scripts/seed-demo-data.py
+    cd /Users/adalton/Development/github/VectorStep/service
+    .venv/bin/python /Users/adalton/Development/github/VectorStep-Website/scripts/seed-demo-data.py
 
-Prereqs: `createdb pork_demo`, then start the service once against it (creates
+Prereqs: `createdb vectorstep_demo`, then start the service once against it (creates
 tables) using the demo CONFIG_PATH (see the website repo README).
 
 The story the data tells (deliberate, mirrors the landing page):
@@ -33,7 +33,7 @@ from pathlib import Path
 
 import yaml
 
-SERVICE_DIR = Path("/Users/adalton/Development/github/P-Ork/service")
+SERVICE_DIR = Path("/Users/adalton/Development/github/VectorStep/service")
 sys.path.insert(0, str(SERVICE_DIR))
 
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine  # noqa: E402
@@ -44,7 +44,7 @@ from src.db.models import (  # noqa: E402
 )
 from src.pipeline.versioning import prompt_hash  # noqa: E402
 
-DB_URL = "postgresql+asyncpg://adalton@localhost:5432/pork_demo"
+DB_URL = "postgresql+asyncpg://adalton@localhost:5432/vectorstep_demo"
 DEMO_PIPELINE_DIR = Path(sys.argv[1]) if len(sys.argv) > 1 else None
 
 random.seed(1912)

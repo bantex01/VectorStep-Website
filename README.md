@@ -1,6 +1,6 @@
-# P-Ork Website
+# VectorStep Website
 
-Marketing site + documentation for [P-Ork](https://github.com/bantex01/P-Ork).
+Marketing site + documentation for [VectorStep](https://github.com/bantex01/VectorStep).
 Astro + Starlight, fully static output — deployable as-is to Vercel, Netlify,
 Cloudflare Pages, or GitHub Pages (point the host at `npm run build` → `dist/`).
 
@@ -30,21 +30,21 @@ Cloudflare Pages, or GitHub Pages (point the host at `npm run build` → `dist/`
 
 ## Regenerating the screenshots
 
-The screenshots are captured from a real P-Ork instance running against a
-seeded demo database (`pork_demo`) — fictional pipelines/data, so nothing
+The screenshots are captured from a real VectorStep instance running against a
+seeded demo database (`vectorstep_demo`) — fictional pipelines/data, so nothing
 personal leaks and no LLM tokens are spent. To re-stage:
 
 ```bash
-createdb pork_demo   # once
+createdb vectorstep_demo   # once
 
 # 1. Start a demo service instance (isolated config, port 8300)
-cd /Users/adalton/Development/github/P-Ork/service
-CONFIG_PATH=/Users/adalton/Development/github/P-Ork-Website/demo/config.yaml \
+cd /Users/adalton/Development/github/VectorStep/service
+CONFIG_PATH=/Users/adalton/Development/github/VectorStep-Website/demo/config.yaml \
   .venv/bin/uvicorn src.main:app --port 8300 --host 127.0.0.1
 
 # 2. Seed the demo data (idempotent — wipes and re-inserts)
-.venv/bin/python /Users/adalton/Development/github/P-Ork-Website/scripts/seed-demo-data.py \
-  /Users/adalton/Development/github/P-Ork-Website/demo/pipelines
+.venv/bin/python /Users/adalton/Development/github/VectorStep-Website/scripts/seed-demo-data.py \
+  /Users/adalton/Development/github/VectorStep-Website/demo/pipelines
 
 # 3. Capture at ~1530x803 viewport and drop into public/screenshots/
 #    (trust-panel.jpg, calibration.jpg, readiness.jpg, runs.jpg)

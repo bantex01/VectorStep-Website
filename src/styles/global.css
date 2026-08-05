@@ -7,7 +7,7 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 @theme {
-  /* P-Ork brand: matches the product UI (zinc dark surfaces, indigo accent) */
+  /* VectorStep brand: matches the product UI (zinc dark surfaces, indigo accent) */
   --color-accent-50: #eef2ff;
   --color-accent-100: #e0e7ff;
   --color-accent-200: #c7d2fe;

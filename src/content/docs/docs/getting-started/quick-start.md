@@ -1,12 +1,12 @@
 ---
 title: Quick start
-description: From zero to a running P-Ork pipeline — service, gateway, first webhook — in about ten minutes.
+description: From zero to a running VectorStep pipeline — service, gateway, first webhook — in about ten minutes.
 sidebar:
   order: 1
 ---
 
-This guide takes you from nothing to a working pair of services — the **P-Ork
-orchestration service** and the **P-Ork Gateway** — with a first pipeline
+This guide takes you from nothing to a working pair of services — the **VectorStep
+orchestration service** and the **VectorStep Gateway** — with a first pipeline
 triggered by a real webhook.
 
 ## Prerequisites
@@ -21,11 +21,11 @@ triggered by a real webhook.
 
 The Gateway runs your AI agents: it owns the full agentic loop (LLM calls, MCP
 tool execution, multi-turn conversation) and returns one clean result per
-request. P-Ork never sees intermediate tool calls — it orchestrates, the
+request. VectorStep never sees intermediate tool calls — it orchestrates, the
 Gateway executes.
 
 ```bash
-git clone <your-fork>/P-Ork-Gateway && cd P-Ork-Gateway
+git clone <your-fork>/VectorStep-Gateway && cd VectorStep-Gateway
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
@@ -44,17 +44,17 @@ python -m gateway.main
 On first run the Gateway generates an identity and an operator token:
 
 ```bash
-cat ~/.pork-gateway/identity/device-auth.json
-# Copy the 'operator' token — P-Ork's config needs it in the next step
+cat ~/.vectorstep-gateway/identity/device-auth.json
+# Copy the 'operator' token — VectorStep's config needs it in the next step
 ```
 
 Both `config.yaml` and `agents/` are gitignored — they hold credentials and
 environment-specific agent definitions.
 
-## 2. Start the P-Ork service
+## 2. Start the VectorStep service
 
 ```bash
-git clone <your-fork>/P-Ork && cd P-Ork/service
+git clone <your-fork>/VectorStep && cd VectorStep/service
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
