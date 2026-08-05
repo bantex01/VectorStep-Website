@@ -38,9 +38,9 @@ contributes to none of them, including the metrics that query
 | `vectorstep_step_grounding_score` | histogram | `pipeline`, `step_name`, `agent`, `model`, `provider` | Shadow-mode grounding score (G) distribution per step, production-scoped (buckets: 0.1, 0.2, ..., 1.0, +Inf). Only steps with a `grounding:` block that produced a score contribute — NULL/not-computed steps are excluded, not padded as zero. |
 | `vectorstep_step_deterministic_check_total` | counter | `pipeline`, `step_name`, `outcome` | Cumulative whole-step deterministic-check outcomes, production-scoped. `outcome` is `passed`/`failed` — `passed` only when every declared check for that step run passed. Steps with no `deterministic_checks:` declared are excluded. |
 | `vectorstep_human_approvals_pending` | gauge | `team` | Currently pending `human` step approvals, awaiting a response on whichever channel (Telegram/Slack/Teams) that team is routed to. Unlike every other metric here this isn't derived from the database — pending approvals are in-memory only — so it reflects only this process's current state, not a historical/cumulative total. NULL team is bucketed as `""`. Always emits at least a zero-valued series so the metric doesn't disappear from dashboards when nothing's pending. Excludes `stage=testing` pending approvals, same as every other series on this page. |
-
-Dollar-cost conversion is intentionally not provided — there's no per-model
-pricing table yet, so this metric is raw token counts only.
+| `vectorstep_pipeline_cost_total` | counter | `pipeline`, `team`, `model`, `provider` | Cumulative step cost in `pricing.currency`'s units. Unpriced steps (no rate match, or no token data) are excluded rather than padded as zero, same treatment as the tokens metric. See [Cost accounting](/docs/operations/cost-accounting/). |
+| `vectorstep_pipeline_approx_cost_total` | counter | `pipeline`, `team`, `model`, `provider` | Best-effort OpenRouter reference cost for steps with no real (manual) price — a separate metric, never blended with `vectorstep_pipeline_cost_total`. Empty unless `pricing.live_pricing.enabled` is set. |
+| `vectorstep_team_budget_ratio` | gauge | `team` | Month-to-date spend / `pricing.team_budgets[team]`, UTC calendar month. Only teams with a configured budget get a series. Advisory only — never gates a run. |
 
 Standard `python_*` / `process_*` / `python_gc_*` process-health metrics are
 included automatically via `prometheus_client`'s default collectors.

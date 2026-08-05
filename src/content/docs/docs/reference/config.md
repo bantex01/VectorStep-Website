@@ -81,6 +81,18 @@ calibration:                           # omit this block entirely for the defaul
   n_min: 20                            # marked outcomes required before a bucket is "validated"
   bin_width: 0.1                       # must evenly divide 1.0
   cache_ttl_seconds: 300                # how long the in-process bucket cache is reused before refetching
+
+pricing:                               # omit this whole block to run fully unpriced
+  currency: USD                        # display label only — no FX conversion anywhere
+  models:
+    - match: {provider: anthropic, model: "claude-sonnet-4-6"}
+      input_per_mtok: 3.00              # currency units per 1,000,000 input tokens
+      output_per_mtok: 15.00
+  team_budgets:
+    payments: 500                      # currency units per calendar month, UTC — advisory only
+  live_pricing:
+    enabled: false                     # optional — best-effort APPROXIMATE cost from OpenRouter's public catalog
+    refresh_interval_seconds: 3600
 ```
 
 `${ENV_VAR}` placeholders are resolved at startup. Unresolved placeholders
@@ -197,3 +209,20 @@ Omit this block entirely for the defaults shown below.
 
 See [Calibration](/docs/pipelines/calibration/) for what these buckets
 measure and how they're used.
+
+## pricing
+
+- `currency` — display label only, no FX conversion. Default: `USD`.
+- `models` — the rate table: a list of `{match: {provider, model}, input_per_mtok,
+  output_per_mtok}` entries, resolved by longest-prefix match on the step's
+  model string, scoped by provider.
+- `team_budgets` — `{team: amount}` map, currency units per calendar month
+  (UTC). Advisory only, never blocks a run.
+- `live_pricing.enabled` / `live_pricing.refresh_interval_seconds` — optional,
+  best-effort *approximate* cost from OpenRouter's public catalog for
+  otherwise-unpriced steps. Off by default.
+
+Omit this whole block to run fully unpriced (every step's cost stays `NULL`,
+every money surface shows "unpriced"). See
+[Cost accounting](/docs/operations/cost-accounting/) for the full pricing
+model, budget guardrails, and live/approximate pricing semantics.

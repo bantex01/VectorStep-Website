@@ -50,12 +50,15 @@ rollup in the app — see [Pipeline stages](/docs/concepts/stages/)).
 GET /pipelines/{name}/stats?time_range=7d&stage=production
 ```
 
-→ `{"pipeline_name", "runs_total", "status_counts": {...}, "success_rate", "tokens": {"input", "output", "total"}, "duration_seconds": {"avg", "p95"}, "accuracy": {"correct", "partial", "incorrect", "total", "correct_pct"}, "teams": [...]}`
+→ `{"pipeline_name", "runs_total", "status_counts": {...}, "success_rate", "tokens": {"input", "output", "total"}, "cost": {"total", "unpriced_steps", "currency"}, "duration_seconds": {"avg", "p95"}, "accuracy": {"correct", "partial", "incorrect", "total", "correct_pct"}, "teams": [...]}`
 
 :::note
 `success_rate` = completed ÷ terminal runs (excludes still-running); `accuracy`
 is the separate *judged* rollup from `RunFeedback` — null/zeroed when nothing's
-been graded, which is **not the same as "0% accurate"**. 404 if the pipeline
+been graded, which is **not the same as "0% accurate"**. `cost.total` is a SUM
+that skips NULL (unpriced) steps; `cost.unpriced_steps` is a separate count of
+how many were skipped, so this can never be mistaken for a complete total —
+see [Cost accounting](/docs/operations/cost-accounting/). 404 if the pipeline
 name is unknown.
 :::
 

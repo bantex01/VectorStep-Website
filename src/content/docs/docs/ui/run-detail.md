@@ -34,6 +34,22 @@ The same events that populate this panel also appear in the **live tail** during
 
 For `openclaw` steps, `agent_trace` is NULL — OpenClaw does not expose intermediate events to VectorStep.
 
+## Cost
+
+Alongside the token badge, each step and the run total show a cost figure
+when [pricing](/docs/operations/cost-accounting/) is configured — 2 decimal
+places normally, 4 when a step's cost would otherwise round to a
+misleadingly-free $0.00. An "unpriced steps: N" note appears whenever some
+steps couldn't be priced, so a partial total is never shown as if it were
+complete.
+
+If `pricing.live_pricing` is enabled, an otherwise-unpriced step's cost badge
+instead shows a best-effort approximation from OpenRouter's public catalog —
+**amber** for a cross-provider guess (with a hover explaining it's an
+estimate), **green** if the step's provider genuinely is `openrouter` (a live
+price for the exact API that was called, just not manually entered). See
+[Cost accounting](/docs/operations/cost-accounting/) for the full model.
+
 ## Accuracy feedback
 
 After a run completes, any user can mark it with a human judgement of whether the pipeline's outcome was correct. The feedback widget appears at the bottom of every finished run's detail page (hidden for `running` and `interrupted` runs).

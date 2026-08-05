@@ -63,9 +63,11 @@ Non-webhook runs don't have a caller/token to resolve team from:
   can be overridden per-call via `context: {team: "..."}` like any other
   field.
 
-:::note
-Out of scope for now: converting tokens to a dollar figure (no per-model
-pricing table exists yet), and fixing the `openclaw` executor's lack of token
-reporting — a team running mostly `openclaw` steps will undercount regardless
-of this feature.
-:::
+## Team budgets
+
+Converting tokens to a dollar figure, and setting an advisory monthly budget
+per team, is covered in [Cost accounting](/docs/operations/cost-accounting/).
+The `openclaw` executor's lack of token reporting still applies there too — a
+team running mostly `openclaw` steps will undercount regardless, which is why
+every cost aggregate carries an "unpriced steps" annotation rather than
+silently showing a possibly-partial total as if it were complete.

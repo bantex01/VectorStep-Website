@@ -149,9 +149,18 @@ schedule:                        # optional — omit for webhook-only pipelines
     service: my-service
     environment: prod
 
-budget:                          # optional — omit to run with no token limit
+budget:                          # optional — omit to run with no token/cost limit
   max_tokens: 50000              # abort run if accumulated tokens across all steps exceeds this
+  max_usd: 5.00                  # abort run if accumulated cost across all steps exceeds this
+  include_approx_cost: false     # let an unpriced step's live/approximate OpenRouter cost count toward max_usd
 ```
+
+At least one of `max_tokens`/`max_usd` is required if `budget:` is present at
+all; both may be set together (whichever trips first aborts the run and
+names which limit it was). `include_approx_cost` can also be set per-step,
+overriding the pipeline's default for that one step. See
+[Cost accounting](/docs/operations/cost-accounting/) for `max_usd` and
+live/approximate pricing in full.
 
 ## Token budget guardrail
 

@@ -11,9 +11,11 @@ The Insights section (`/ui/insights/*`) is a set of eight pages giving cross-pip
 
 `/ui/insights` shows run/failure/token/accuracy totals, runs by team, and MCP tool-use counts, over a selectable time range (24h/7d/30d/all-time). This is the landing page for the section — a single screen of the numbers you'd otherwise have to piece together from the Runs and Pipelines pages.
 
+When `pricing.live_pricing.enabled` is set (see [Cost accounting](/docs/operations/cost-accounting/)), this page also shows a **Live reference pricing** panel — OpenRouter's current list price for every model in use that could be fuzzy-matched, clearly disclaimed as approximate and not necessarily what you actually pay.
+
 ## Insights — Pipelines
 
-`/ui/insights/pipelines` shows per-pipeline run/failure/duration/token totals and a top-pipelines table. Drilling into a pipeline gives a status/accuracy breakdown, a timeseries, recent runs, and a step/agent/model breakdown table for that pipeline specifically.
+`/ui/insights/pipelines` shows per-pipeline run/failure/duration/token/cost totals and a top-pipelines table. Drilling into a pipeline gives a status/accuracy breakdown, a timeseries, recent runs, and a step/agent/model breakdown table for that pipeline specifically.
 
 ## Insights — Steps
 
@@ -25,11 +27,11 @@ The Insights section (`/ui/insights/*`) is a set of eight pages giving cross-pip
 
 ## Insights — Models
 
-`/ui/insights/models` shows per-model (provider-qualified — see [Agent Library — model display](#model-display-and-the-provider-column)) success-rate/duration/token totals and a top-models table, with a per-model drilldown (status breakdown, timeseries, recent calls, and a pipeline/step/agent breakdown table). This page is **production only** and **`executor: gateway` steps only** — it has no data for OpenClaw-executed steps, since only the gateway executor records a model per step.
+`/ui/insights/models` shows per-model (provider-qualified — see [Agent Library — model display](#model-display-and-the-provider-column)) success-rate/duration/token/cost totals and a top-models table, with a per-model drilldown (status breakdown, timeseries, recent calls, and a pipeline/step/agent breakdown table). This page is **production only** and **`executor: gateway` steps only** — it has no data for OpenClaw-executed steps, since only the gateway executor records a model per step.
 
 ## Insights — Providers
 
-`/ui/insights/providers` groups calls/success-rate/duration/token totals by LLM provider (`anthropic`, `openrouter`, `azure`, etc.), with a top-providers table and a per-provider drilldown of the same shape as the other Insights pages.
+`/ui/insights/providers` groups calls/success-rate/duration/token/cost totals by LLM provider (`anthropic`, `openrouter`, `azure`, etc.), with a top-providers table and a per-provider drilldown of the same shape as the other Insights pages.
 
 This page folds in what used to be the standalone `/ui/providers` page — old links redirect here. It also has one piece of special-casing not found on any other Insights page: **it falls back to a best-effort provider guess parsed from the model string for pre-migration rows that have no `provider` value recorded**, since the entire point of this page is bucketing by provider, and a page that couldn't bucket older rows at all would undercount them. Every other Insights page instead leaves an unrecorded provider as a bare model name rather than guessing — this page is the deliberate exception, because guessing here is strictly better than an artificial gap in the provider totals.
 
@@ -41,7 +43,9 @@ Like Models, this page is production only and `executor: gateway` steps only.
 
 ## Insights — Teams
 
-`/ui/insights/teams` shows per-team run/success-rate/duration/token totals and a top-teams table. The per-team drilldown gives a complete picture of what a team uses and where — pipelines used, and a pipeline/step/agent/model breakdown table — plus its token spend, for informed cost decisions. A NULL team is bucketed as "Unattributed" rather than dropped.
+`/ui/insights/teams` shows per-team run/success-rate/duration/token/cost totals and a top-teams table. The per-team drilldown gives a complete picture of what a team uses and where — pipelines used, and a pipeline/step/agent/model breakdown table — plus its token/cost spend, for informed cost decisions. A NULL team is bucketed as "Unattributed" rather than dropped.
+
+If `pricing.team_budgets` is configured, this page also shows a **month-to-date budgets** section — a spend-vs-budget bar per team, advisory only (see [Cost accounting](/docs/operations/cost-accounting/)).
 
 ## Agent Library
 

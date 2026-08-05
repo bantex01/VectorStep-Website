@@ -24,6 +24,11 @@ just asserted. The result is a **grounding score G ∈ [0,1]** (the fraction of
 claims that are supported) plus a per-claim breakdown, both persisted as
 `pipeline_steps.grounding_score` and `pipeline_steps.trust_report`.
 
+The judge call itself spends real tokens against a real model — its
+`grounding_model`/`grounding_provider`/token usage are captured and priced
+into the step's `cost` alongside the primary call, same as verifier tokens.
+See [Cost accounting](/docs/operations/cost-accounting/).
+
 :::note[Phase 0 — shadow only]
 This is pure observation: G is recorded, never enforced. It never touches
 `effective_confidence`, the `confidence_threshold` gate, `on_low_confidence`,
