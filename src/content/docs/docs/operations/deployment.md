@@ -31,6 +31,7 @@ step_library_dir: ./steps            # reusable step definitions; omit to disabl
 database:
   url: sqlite+aiosqlite:///./runs.db
   # url: postgresql+asyncpg://user:password@localhost:5432/vectorstep   # production — see Database below
+  # auto_migrate: true   # run pending migrations on boot; false hands control to a DBA
 
 notifications:
   telegram:
@@ -119,17 +120,37 @@ database:
   url: postgresql+asyncpg://user:password@localhost:5432/vectorstep
 ```
 
-Tables and migrations run automatically on startup (`create_tables()` in
-`service/src/db/database.py`) — same as SQLite, no Alembic or manual migration
-step.
+Schema migrations run automatically on startup via
+[Alembic](https://alembic.sqlalchemy.org/) (`create_tables()` in
+`service/src/db/database.py`, calling `alembic upgrade head` programmatically)
+— same as SQLite, no manual step for a normal boot.
 
-**Migration mechanism:** new columns are added via a small
-`_COLUMN_MIGRATIONS` list run on every boot. Postgres uses native `ADD COLUMN
-IF NOT EXISTS`; SQLite has no such syntax (confirmed unsupported as of SQLite
-3.51), so it attempts the plain `ADD COLUMN` and ignores `OperationalError`
-(logged at `DEBUG`) when the column is already there. Index creation
-(`_INDEX_MIGRATIONS`, including `CREATE UNIQUE INDEX IF NOT EXISTS`) is
-portable across both dialects as-is.
+**Migration mechanism.** `service/migrations/` holds the revision history;
+`Base.metadata` (`service/src/db/models.py`) is the source of truth for the
+ORM models, and revisions are generated with `alembic revision --autogenerate`
+and reviewed, never trusted blind. On boot, `create_tables()` adopts whatever
+state the database is already in:
+
+- Already stamped at head → no-op.
+- A brand-new, empty database → `alembic upgrade head` from scratch.
+- Any pre-Alembic deployment (tables exist, no `alembic_version` table) — i.e.
+  every database created by a VectorStep version older than this mechanism —
+  gets a one-time legacy shim that brings it to exactly the baseline
+  revision's shape (this is the old add-column/add-index mechanism: Postgres
+  used native `ADD COLUMN IF NOT EXISTS`, SQLite fell back to a plain
+  `ADD COLUMN` with the "already exists" error swallowed), stamps it at that
+  baseline, then upgrades to head like any other database. Retained for one
+  release cycle's worth of specs, then removed — by then every deployment
+  that's booted at least once has been adopted.
+
+Set `database.auto_migrate: false` (default `true`) to take migrations out of
+the boot path entirely — for a DBA-controlled deployment. Startup then fails
+fast, naming the pending revisions, if the schema is behind head, instead of
+migrating it for you. Run migrations yourself with:
+
+```bash
+cd service && alembic upgrade head
+```
 
 **Dedup race hardening:** a partial unique index —
 `UNIQUE (pipeline_name, fingerprint) WHERE status = 'running'` — closes a

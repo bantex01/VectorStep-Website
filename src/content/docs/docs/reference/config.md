@@ -119,6 +119,11 @@ become `""`.
     same code path, dialect swap via config only. See
     [Deployment](/docs/operations/deployment/) for the operational detail on
     making this switch.
+- `auto_migrate` — run pending Alembic migrations automatically on boot.
+  Default `true`. Set `false` to hand migrations to a DBA — startup then
+  fails fast, naming the pending revisions, instead of applying them. See
+  [Deployment](/docs/operations/deployment/#database) for the full adoption
+  mechanism.
 
 ## notifications
 
