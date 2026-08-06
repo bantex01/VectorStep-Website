@@ -56,7 +56,7 @@ environment-specific agent definitions.
 ```bash
 git clone <your-fork>/VectorStep && cd VectorStep/service
 python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r ../requirements.txt   # requirements.txt lives at the repo root
 
 # Service config: database, executors (paste the Gateway operator token here),
 # notification channels, calibration defaults

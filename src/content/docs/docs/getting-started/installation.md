@@ -50,7 +50,7 @@ For agent authoring (`agent.yaml`, `soul.md`, hot reload), see
 cd service
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r ../requirements.txt   # requirements.txt lives at the repo root
 
 # Run service
 uvicorn src.main:app --reload --port 8000
