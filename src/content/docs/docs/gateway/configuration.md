@@ -82,6 +82,9 @@ providers:
     api_key: ${AZURE_OPENAI_API_KEY}
     resource_name: ${AZURE_OPENAI_RESOURCE}   # e.g. "my-company-openai"
     api_version: "2025-01-01-preview"         # optional, this is the default
+  openai:
+    api_key: ${OPENAI_API_KEY}
+    base_url: https://api.openai.com/v1       # optional, this is the default
   yolo:
     api_key: ${YOLO_API_KEY}
     base_url: https://your-provider.example.com/v1
@@ -112,6 +115,7 @@ Most providers support `api_key` and `base_url`. Azure uses different fields:
 | `ollama-cloud` | `https://ollama.com/api` | Native Ollama `/api/chat` endpoint |
 | `google` | `https://generativelanguage.googleapis.com/v1beta/openai` | OpenAI-compat |
 | `azure` | `https://{resource_name}.openai.azure.com/openai/deployments/{deployment}/chat/completions` | OpenAI-compat, auth via `api-key` header |
+| `openai` | `https://api.openai.com/v1` | Native OpenAI API |
 | `yolo` | None — `base_url` required | Generic OpenAI-compat custom endpoint, e.g. a self-hosted or third-party API |
 
 ## `logging`

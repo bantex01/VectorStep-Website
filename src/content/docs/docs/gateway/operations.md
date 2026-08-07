@@ -75,6 +75,7 @@ used:
 | `GOOGLE_API_KEY` | `providers.google` | Google AI API key |
 | `AZURE_OPENAI_API_KEY` | `providers.azure.api_key` | Azure OpenAI API key |
 | `AZURE_OPENAI_RESOURCE` | `providers.azure.resource_name` | Azure resource name (subdomain of `.openai.azure.com`) |
+| `OPENAI_API_KEY` | `providers.openai` | OpenAI API key |
 | `GRAFANA_URL` | `mcp_servers.grafana` | Grafana instance URL |
 | `GRAFANA_TOKEN` | `mcp_servers.grafana` | Grafana service account token |
 | `TAVILY_API_KEY` | `mcp_servers.tavily` | Tavily web search API key |
