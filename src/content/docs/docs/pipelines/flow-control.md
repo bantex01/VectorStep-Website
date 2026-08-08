@@ -48,7 +48,7 @@ against a model.
 | `aborted` | A step aborted due to low confidence |
 | `failed` | A step raised an unhandled error |
 | `running` | Currently in progress |
-| `interrupted` | Service restarted/crashed mid-run — set by the startup sweep, not the runner |
+| `interrupted` | Service restarted/crashed mid-run — set by the startup sweep, not the runner. A pipeline with `durable:` set resumes instead of landing here, unless the guard conditions in [Durability & resume](/docs/operations/durability/) rule it out |
 
 ## Conditional steps (`when:`)
 

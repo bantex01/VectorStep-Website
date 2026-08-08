@@ -111,6 +111,7 @@ pooled as evidence for the same track record.
 | `text` | `content` | Text output block from the LLM |
 | `tool_call` | `name`, `input` | Tool call about to be executed |
 | `tool_result` | `name`, `content`, `is_error` | Result returned from MCP tool. `content` is capped at `limits.trace_tool_result_max_chars` (default 3000, overridable per-request via `traceToolResultMax` — see [Configuration](/docs/gateway/configuration/#limits)) — this is a trace-only truncation; the LLM's own conversation always sees the full result. |
+| `tool_denied` | `name`, `server`, `rule_index`, `reason` | A [tool_policy](/docs/gateway/tool-policy/) rule blocked this call before it reached the MCP server. No `tool_result` event follows it — the LLM receives an `is_error` tool result instead. |
 
 ## Session Keys
 

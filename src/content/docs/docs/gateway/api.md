@@ -20,6 +20,7 @@ sidebar:
 | `POST` | `/reload` | Reload all agent configs from disk |
 | `GET` | `/mcp/tools` | List all tools across all MCP servers |
 | `GET` | `/mcp/servers` | List MCP server status (pid, tool count) |
+| `GET` | `/tool-policy` | Read-only view of the active [tool_policy](/docs/gateway/tool-policy/) rules (reasons included) — no write endpoint, policy changes require a config edit + restart |
 | `GET` | `/metrics` | Prometheus metrics (no auth required) |
 
 ## `/health` response

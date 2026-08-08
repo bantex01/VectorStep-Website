@@ -164,3 +164,27 @@ Grafana Tempo.
 1. Get your OTLP endpoint from Grafana Cloud portal → Connections → OpenTelemetry
 2. Set `OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic <base64(instanceId:apiKey)>` in your environment
 3. Enable `observability.otel.enabled: true` and set `endpoint` to your Grafana Cloud OTLP URL
+
+## `tool_policy`
+
+Optional. Operator-owned allow/deny rules evaluated on every tool call,
+independent of any agent's own `tools:` allowlist. Omit it entirely for the
+previous unconditional-execution behaviour. See
+[Tool policy](/docs/gateway/tool-policy/) for the full schema, matching
+semantics, the audit trail, and default-deny visibility filtering.
+
+```yaml
+tool_policy:
+  default: allow            # allow | deny
+  rules:
+    - deny: {server: atlassian, tool: jira_delete_issue}
+      reason: "Destructive Jira operations are operator-only"
+    - allow: {server: grafana}
+```
+
+| Field | Default | Description |
+|---|---|---|
+| `default` | `allow` | Decision when no rule matches |
+| `rules` | `[]` | Ordered list — first match wins |
+| `rules[].allow` / `rules[].deny` | — | Exactly one per rule; match block: `server`, `tool` (glob), `agent` (glob), `input_regex` |
+| `rules[].reason` | — | Required on `deny`, optional on `allow` |

@@ -35,6 +35,7 @@ scrape_configs:
 | `vectorstep_gateway_llm_tokens_total` | Counter | `agent`, `model`, `direction` | Total LLM tokens consumed (`direction`: `input`/`output`) |
 | `vectorstep_gateway_tool_calls_total` | Counter | `mcp_server`, `tool`, `result` | Total MCP tool calls by server, tool, and result (`success`/`error`/`timeout`) |
 | `vectorstep_gateway_tool_call_duration_seconds` | Histogram | `mcp_server` | MCP tool call duration in seconds |
+| `vectorstep_gateway_tool_denials_total` | Counter | `mcp_server`, `tool`, `agent` | Total tool calls blocked by [tool_policy](/docs/gateway/tool-policy/) |
 | `vectorstep_gateway_mcp_servers_running` | Gauge | `mcp_server` | 1 if MCP server is running, 0 otherwise |
 | `vectorstep_gateway_mcp_restarts_total` | Counter | `mcp_server` | Total MCP server restarts |
 | `vectorstep_gateway_sessions_active` | Gauge | — | Number of active sessions |

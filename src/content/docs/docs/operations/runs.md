@@ -25,10 +25,18 @@ the artifact store that keeps large step outputs off the database entirely.
 | `normalised_context` | json | Full NormalisedContext at trigger time |
 | `raw_payload` | json | Original unmodified webhook payload |
 | `completed_at` | datetime, nullable | |
-| `logs` | json, nullable | Structured run event log — array of `{ts, level, event, msg}` objects. Populated at run completion. Events cover step start/complete/fail/skip/escalate/abort, verifier results, parallel group outcomes, notifications sent, and (for `interrupted` runs) the startup interruption sweep. |
+| `logs` | json, nullable | Structured run event log — array of `{ts, level, event, msg}` objects. Populated at run completion. Events cover step start/complete/fail/skip/escalate/abort, verifier results, parallel group outcomes, notifications sent, and (for `interrupted` runs) the startup interruption sweep, or (for resumed runs) `run_resumed` — see [Durability & resume](/docs/operations/durability/). |
 | `parent_run_id` | uuid, nullable, indexed | Set for sub-pipeline runs (`executor: pipeline`). Links back to the parent run. NULL for top-level runs. |
 | `team` | str, nullable, indexed | Owning team, resolved from the Bearer token that authenticated the webhook (see [Team attribution](/docs/operations/teams/)). NULL for unattributed/legacy-token runs. |
 | `stage` | str, indexed | `testing` or `production`, copied from `PipelineConfig.stage` (see [Pipeline stages](/docs/concepts/stages/)) at trigger time — persisted per-run so promoting a pipeline never reclassifies its prior runs. Defaults to `production` at the DB layer for rows that predate this column. |
+| `config_fingerprint` | str, nullable | Fingerprint of the pipeline's step sequence at trigger time, populated on every run. Compared against the current config at resume time — see [Durability & resume](/docs/operations/durability/). |
+| `resumed_at` | datetime, nullable | Set the first time this run is resumed after a restart; never cleared. Drives `vectorstep_runs_resumed_total`. |
+
+A **pending_approvals** table durably mirrors an outstanding `executor: human`
+wait (token, run, step, message) so an approval request already delivered to
+Telegram/Slack/Teams still resolves after a restart — written when the
+request is sent, deleted when it resolves. See
+[Durability & resume](/docs/operations/durability/).
 
 **pipeline_steps**
 
