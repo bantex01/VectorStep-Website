@@ -44,3 +44,10 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # Default is 10 minutes. The first deploy(s) right after attaching
+          # a custom domain can take longer than that for GitHub's CDN purge
+          # to settle, so this action was timing out and aborting even though
+          # the underlying deployment was likely still progressing. 25 min
+          # gives it room; drop this back down once deploys are reliably fast.
+          timeout: 1500000
