@@ -11,9 +11,9 @@ functionality to MCP clients such as Claude Code and Claude Desktop, so
 pipelines, steps, and agents can be authored conversationally instead of by
 hand-editing files:
 
-- **[VectorStep Service MCP](#p-ork-service-mcp)** — pipelines, steps, runs, and
+- **[VectorStep Service MCP](#vectorstep-service-mcp)** — pipelines, steps, runs, and
   analytics.
-- **[VectorStep Gateway MCP](#p-ork-gateway-mcp)** — agents (`agent.yaml` +
+- **[VectorStep Gateway MCP](#vectorstep-gateway-mcp)** — agents (`agent.yaml` +
   `soul.md`), MCP tool/provider introspection.
 
 The two have clean, non-overlapping tool sets: agents live in the Gateway MCP,
@@ -221,6 +221,19 @@ single-operator, locally-spawned use case.
   auditable and recoverable. `overwrite=true` on create is likewise explicit
   and non-default.
 
+### Development
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+The end-to-end test (`tests/test_e2e.py`) boots a real VectorStep instance as
+a subprocess and drives create → get → validate → run → submit_feedback →
+get_pipeline_stats through the actual tool functions — it never imports
+VectorStep's code, only talks to it over HTTP, same as production. It skips
+cleanly if the sibling `VectorStep/service/.venv` isn't present.
+
 ## VectorStep Gateway MCP
 
 An MCP server that exposes the VectorStep Gateway — a WebSocket gateway that runs
@@ -421,3 +434,16 @@ Other notes for authors of agents via this server:
   `confirm=true` and returns the deleted `agent_yaml`/`soul_md` so the
   operation is auditable and recoverable. `overwrite=true` on `create_agent`
   is likewise explicit and non-default.
+
+### Development
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+The end-to-end test (`tests/test_e2e.py`) boots a real gateway instance as a
+subprocess and drives create → get → validate → update → reload → delete
+through the actual tool functions — it never imports the gateway's code,
+only talks to it over HTTP, same as production. It skips cleanly if the
+sibling `VectorStep-Gateway/.venv` isn't present.

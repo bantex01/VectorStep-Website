@@ -54,8 +54,9 @@ purpose.
 
 ## Project structure
 
-The tree below is trimmed to two levels — see the repository itself for the
-full layout of `src/`, `samples/`, and friends.
+The tree below is trimmed to two levels — see
+[Project structure](/docs/design/project-structure/) for the full layout of
+`src/`, `samples/`, and friends.
 
 ```
 samples/                      # Copy-and-adapt templates for new deployments (git controlled)

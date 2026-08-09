@@ -5,10 +5,12 @@ sidebar:
   order: 2
 ---
 
-Three of VectorStep's extension points are deliberately designed so that adding
-one needs no changes anywhere else in the codebase: source parsers,
-executors, and library steps. This page is the complete reference for all
-three — condensed pointers to it also appear on
+VectorStep does not accept external contributions — but it is Apache-2.0, so
+extending your own copy is expected and supported (see
+[Licence & contributions](/docs/about/licence-and-contributions/)). These are
+the three extension points designed to need no other changes: source
+parsers, executors, and library steps. This page is the complete reference
+for all three — condensed pointers to it also appear on
 [Webhooks](/docs/integrations/webhooks/),
 [Executors](/docs/integrations/executors/), and
 [Steps](/docs/pipelines/steps/).

@@ -6,7 +6,7 @@ sidebar:
 ---
 
 These endpoints were added so the
-[VectorStep Service MCP](/docs/reference/write-api/#the-p-ork-service-mcp) can
+[VectorStep Service MCP](/docs/reference/write-api/#the-vectorstep-service-mcp) can
 author and inspect pipelines without importing the VectorStep codebase. The
 analytics endpoints share their aggregation queries with the
 `/ui/insights/*` pages (`src/analytics.py`), so the numbers they return can

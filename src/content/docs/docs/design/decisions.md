@@ -20,7 +20,8 @@ The full list, verbatim from the project's own design notes:
 | Structured JSON output from LLM | Makes flow control deterministic — runner reads `confidence`/`proceed`, not prose |
 | Extra fields allowed on LLMOutput | Domain fields (`jira_ticket`, `action`, etc.) pass between steps without schema changes |
 | Isolated session key per step | Prevents context bleed between concurrent runs and between steps |
-| SQLAlchemy async ORM, dialect swap via config only | SQLite for zero-infra local dev, Postgres for production — same code path, no Alembic |
+| SQLAlchemy async ORM, dialect swap via config only | SQLite for zero-infra local dev, Postgres for production — same code path |
+| Alembic with auto-upgrade-on-boot | The hand-rolled add-column/add-index mechanism only ever adds nullable columns — it outgrew that at ~20 columns and couldn't rename, drop, backfill, or alter types. Auto-migrate-on-boot keeps the zero-ops experience; `database.auto_migrate: false` hands control to a DBA |
 | DB-level partial unique index for in-flight dedup | The application-level pre-check narrows but cannot close a TOCTOU race on its own — the DB constraint is the actual correctness guarantee, the pre-check just avoids the round-trip in the common case |
 | Adapter pattern for executors | Swap or mix backends with config changes only; steps in the same pipeline can use different executors |
 | Runner owns flow decisions | LLM recommends, service decides — never blindly chain prompts |

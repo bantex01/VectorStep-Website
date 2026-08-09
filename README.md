@@ -1,13 +1,6 @@
 # VectorStep Website
 
-Marketing site + documentation for [VectorStep](https://github.com/bantex01/VectorStep).
-Astro + Starlight, fully static output — deployable as-is to Vercel, Netlify,
-Cloudflare Pages, or GitHub Pages (point the host at `npm run build` → `dist/`).
-
-- `/` — the landing page (`src/pages/index.astro`), dark zinc + indigo, matching
-  the product UI. The hero carousel cycles real product screenshots from
-  `public/screenshots/`.
-- `/docs/…` — Starlight docs (`src/content/docs/docs/`), with built-in search.
+Marketing site + documentation for VectorStep. Astro + Starlight, fully static.
 
 ## Commands
 
@@ -18,39 +11,23 @@ Cloudflare Pages, or GitHub Pages (point the host at `npm run build` → `dist/`
 | `npm run build`   | Static build to `./dist/`                 |
 | `npm run preview` | Preview the built site locally            |
 
-## Status
+## Structure
 
-- Landing page, theme, docs IA: **done**.
-- Docs content: three exemplar pages are finished
-  (`getting-started/quick-start`, `concepts/confidence`, `pipelines/verifiers`);
-  the remaining pages are stubs pending migration from the product READMEs —
-  see **`SPEC-content-migration.md`** for the full content map and rules.
-- Placeholders to update before launch: `CONSOLE_URL` and `GITHUB_URL` in
-  `src/pages/index.astro`, and the `social` GitHub link in `astro.config.mjs`.
+- `src/pages/index.astro` — landing page
+- `src/content/docs/docs/` — Starlight docs, grouped as Getting Started,
+  Concepts, Pipelines, Sources & Executors, UI & Insights, Gateway, Operations,
+  Reference, Design & Internals, About
+- `src/styles/global.css` — theme
+- `public/screenshots/` — landing-page carousel images
 
-## Regenerating the screenshots
+## Deployment
 
-The screenshots are captured from a real VectorStep instance running against a
-seeded demo database (`vectorstep_demo`) — fictional pipelines/data, so nothing
-personal leaks and no LLM tokens are spent. To re-stage:
+Point the host at `npm run build` → `dist/`. Deployable to Vercel, Netlify,
+Cloudflare Pages or GitHub Pages.
 
-```bash
-createdb vectorstep_demo   # once
+Regenerating the demo screenshots is documented in the private dev-docs repo.
 
-# 1. Start a demo service instance (isolated config, port 8300)
-cd /Users/adalton/Development/github/VectorStep/service
-CONFIG_PATH=/Users/adalton/Development/github/VectorStep-Website/demo/config.yaml \
-  .venv/bin/uvicorn src.main:app --port 8300 --host 127.0.0.1
+## Licence
 
-# 2. Seed the demo data (idempotent — wipes and re-inserts)
-.venv/bin/python /Users/adalton/Development/github/VectorStep-Website/scripts/seed-demo-data.py \
-  /Users/adalton/Development/github/VectorStep-Website/demo/pipelines
-
-# 3. Capture at ~1530x803 viewport and drop into public/screenshots/
-#    (trust-panel.jpg, calibration.jpg, readiness.jpg, runs.jpg)
-```
-
-The interesting URLs: `/ui/runs` (pick the newest escalated
-`alert-triage-critical` run for the Trust panel), `/ui/insights/steps`
-(sre-investigation drilldown for calibration flags),
-`/ui/pipelines/checkout-refund-agent` (readiness card), `/ui/runs` (list).
+All rights reserved. Unlike the engine repos, this repo carries no open-source
+licence — it is marketing content, not engine code.

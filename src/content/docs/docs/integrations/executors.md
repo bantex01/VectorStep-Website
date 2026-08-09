@@ -43,6 +43,35 @@ Executors are registered by name in `src/executors/__init__.py` and referenced b
 | `url` | `ws://127.0.0.1:18789/rpc` | OpenClaw Gateway WebSocket URL |
 | `identity_dir` | `~/.openclaw/identity` | Path to the directory containing `device.json` and `device-auth.json`. Override when OpenClaw is on a different machine and you have copied the identity files to a custom path. |
 
+#### Identity files
+
+The `openclaw` executor authenticates to the OpenClaw Gateway using **Ed25519
+device-signature auth**. The required files are created automatically by
+OpenClaw — they are not something VectorStep creates:
+
+| File | Created by | Purpose |
+|---|---|---|
+| `~/.openclaw/identity/device.json` | OpenClaw on first run / `openclaw configure` | Device ID + Ed25519 private key |
+| `~/.openclaw/identity/device-auth.json` | OpenClaw device authorisation flow | Operator token + scopes |
+
+**Co-located setup (VectorStep and OpenClaw on the same machine):** the files
+are already present and everything works automatically.
+
+**Remote OpenClaw (gateway on a different machine):**
+
+1. Copy `~/.openclaw/identity/` from the OpenClaw machine to the VectorStep
+   machine (or mount it as a Kubernetes Secret)
+2. Set `executors.openclaw.identity_dir` in `config.yaml` to the path where
+   you copied the files
+3. On the OpenClaw machine, confirm VectorStep's device is approved:
+   `openclaw devices list`
+
+**If the files are missing:** VectorStep logs a warning at startup and the
+`openclaw` executor is still registered, but any pipeline step using
+`executor: openclaw` will fail with a clear `FileNotFoundError` until the
+files are in place. The service continues to run normally — only openclaw
+steps are affected.
+
 ### `gateway` — VectorStep Gateway WebSocket
 
 **`executor: gateway`** — Invokes agents via the VectorStep Gateway WebSocket API. Token-based auth (no device identity required). The VectorStep Gateway is a separate service that can run different model backends (Anthropic, OpenRouter, Ollama, Google) and MCP tool configurations independent of OpenClaw.

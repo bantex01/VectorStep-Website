@@ -16,7 +16,7 @@ pipeline/step/agent analytics endpoints, see
 [Analytics API](/docs/reference/analytics-api/). For the endpoints that
 create, update, validate, and delete pipelines and steps, see
 [Write API](/docs/reference/write-api/) — both were added to back the
-[VectorStep Service MCP](/docs/reference/write-api/#the-p-ork-service-mcp).
+[VectorStep Service MCP](/docs/reference/write-api/#the-vectorstep-service-mcp).
 
 ## Triggering runs
 
