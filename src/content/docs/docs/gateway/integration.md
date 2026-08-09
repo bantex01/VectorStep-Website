@@ -16,7 +16,7 @@ In VectorStep's `config.yaml`:
 ```yaml
 executors:
   gateway:
-    url: ws://localhost:18780/ws        # gateway WebSocket endpoint
+    url: ws://localhost:18780/rpc        # gateway WebSocket endpoint
     token: ${VECTORSTEP_GATEWAY_TOKEN}        # operator token from device-auth.json
     rest_url: http://localhost:18780    # used by the VectorStep Agents UI
 ```

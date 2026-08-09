@@ -25,6 +25,7 @@ tools:                    # MCP server names from mcp_servers config
 | `model` | Yes | Default model string. Can be overridden per-request via `executor_config.model` in VectorStep. |
 | `model_fallbacks` | No | List of model strings to try, in order, if `model` exhausts its retries (see [`limits.llm_retry_attempts`](/docs/gateway/configuration/#limits)). Once a fallback succeeds, later iterations in the same run try it first. |
 | `max_tokens` | Yes | Max output tokens per LLM call. |
+| `thinking_level` | No | Default reasoning effort: `off`, `minimal`, `low`, `medium`, `high`, `xhigh`. Omit for no extended thinking. Overridable per-request via `executor_config.thinking_level` in VectorStep (see below). |
 | `tools` | No | MCP server names, optionally scoped to specific tools (see below). Omit or leave empty for no tool access. |
 
 ```yaml
@@ -60,6 +61,30 @@ namespaced `server__tool` form used internally — check `GET /mcp/tools` (see
 [REST API](/docs/gateway/api/)) for the exact names a server exposes. Mixing
 scoped and unscoped entries in the same list is fine.
 
+### Reasoning effort (`thinking_level`)
+
+An agent whose job genuinely needs deliberation can say so once, in its own
+config, rather than relying on every calling pipeline step to remember:
+
+```yaml
+name: sre-triage
+model: anthropic/claude-sonnet-4-6
+max_tokens: 8192
+thinking_level: high
+```
+
+Precedence works exactly like `model`/`model_override`: a request that carries
+its own `thinking_level` (a step's `executor_config.thinking_level` — see
+[Executors](/docs/integrations/executors/)) wins, and the agent's value applies
+otherwise. Passing `off` per-request is therefore the escape hatch for running
+a high-effort agent cheaply on one step. Omitting the field everywhere leaves
+behaviour exactly as it was: no extended thinking.
+
+Only the Anthropic provider acts on this today — it maps the level to a
+thinking budget. Every other provider logs a warning and ignores it, the same
+as it already does for the per-request form. OpenAI's equivalent
+(`reasoning_effort`) is not wired up.
+
 ## `soul.md`
 
 The system prompt. Written in Markdown, sent as the `system` message to the
@@ -86,6 +111,7 @@ configured providers:
 
 - **Unrecognized prefix** (e.g. `my-custom/model`) — logged as `ERROR`. The agent will load but every request will fail with a `KeyError` at runtime.
 - **Known prefix, missing api_key** (e.g. `openrouter/...` but `providers.openrouter.api_key` is empty) — logged as `WARNING`. The agent will load but requests will fail with auth errors.
+- **`thinking_level` set on a provider that ignores it** — logged as `WARNING`, once per agent. Names every affected model string, and distinguishes the two cases: if the agent's *primary* model is on such a provider it will never use extended thinking at all; if only `model_fallbacks` are, it silently loses extended thinking the moment it fails over. Only Anthropic acts on `thinking_level` today (see [Reasoning effort](#reasoning-effort-thinking_level)).
 
 Local Ollama (`ollama/...`) is exempt from the api_key check — it requires no
 credentials by default.

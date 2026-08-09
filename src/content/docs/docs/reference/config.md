@@ -34,7 +34,7 @@ executors:
   openclaw:
     url: ws://127.0.0.1:18789/rpc      # OpenClaw Gateway WebSocket URL
   gateway:
-    url: ws://localhost:18780/ws        # VectorStep Gateway WebSocket URL
+    url: ws://localhost:18780/rpc        # VectorStep Gateway WebSocket URL
     token: ${VECTORSTEP_GATEWAY_TOKEN}        # Bearer token; empty string for local dev
     rest_url: http://localhost:18780    # VectorStep Gateway REST base URL (used by Agents UI)
 

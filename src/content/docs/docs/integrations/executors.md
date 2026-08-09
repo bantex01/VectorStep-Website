@@ -83,7 +83,7 @@ steps are affected.
 | `agent` | **Yes** | VectorStep Gateway agent name |
 | `session_key` | No | Jinja2 template; must start with `agent:{agent-name}:`. Default: `agent:{{agent}}:pipeline:{{pipeline_run_id}}:{{step_name}}` |
 | `model` | No | Model override string, e.g. `anthropic/claude-sonnet-4-6`, `openrouter/...`, `ollama-cloud/...` |
-| `thinking_level` | No | Thinking level override: `low\|medium\|high` etc. |
+| `thinking_level` | No | Thinking level override: `off\|minimal\|low\|medium\|high\|xhigh`. Overrides the agent's own [`thinking_level`](/docs/gateway/agents/) default when both are set; pass `off` to opt a high-effort agent out for this step. Omit to inherit the agent default. |
 | `timeout_seconds` | No | Per-request timeout override (default: 1200) |
 | `trace_max_chars` | No | Overrides the Gateway's `limits.trace_tool_result_max_chars` (default 3000) for this step's `tool_result` trace events only — sent as `traceToolResultMax` on the agent request. Only affects the trace copy recorded/streamed for observability (and what `grounding.max_trace_chars` has available to hand the judge — see [Confidence & the trust vector](/docs/concepts/confidence/)). The agent's own conversation always sees the full, untruncated tool output regardless of this setting. Raise it on steps whose tools return long content if grounding or a human reviewing the trace is drawing false conclusions from evidence that was cut off before the Gateway ever sent it to VectorStep. |
 
