@@ -159,36 +159,94 @@ See [Webhooks](/docs/integrations/webhooks/) for the full dedup mechanism.
 
 ## Docker
 
-The service ships a `Dockerfile` at `service/Dockerfile`, used as the base for
-the Kubernetes build below.
+VectorStep and the Gateway each ship their own `Dockerfile`
+(`service/Dockerfile` in this repo, `Dockerfile` at the root of
+VectorStep-Gateway) and publish multi-arch (`linux/amd64` + `linux/arm64`)
+images to GHCR on every tagged release, plus an `edge` tag tracking the
+default branch. See [Versions and releases](/docs/about/status-and-support/#versions-and-releases)
+for what each tag means and the VectorStep/Gateway compatibility rule:
+
+```bash
+docker pull ghcr.io/bantex01/vectorstep:latest
+docker pull ghcr.io/bantex01/vectorstep-gateway:latest
+```
+
+Images contain code and committed samples only — **config is never baked in**.
+Mount a config file and point `CONFIG_PATH` (VectorStep) /
+`VECTORSTEP_GATEWAY_CONFIG` (Gateway) at it; secrets arrive as environment
+variables consumed by the config's `${VAR}` substitution. Everything writable
+lives under a single `/data` volume, so the container variant of
+`config.yaml` looks like this:
+
+```yaml
+database: {url: "sqlite+aiosqlite:////data/db/runs.db"}   # four slashes = absolute path
+pipeline_config_dir: /data/pipelines     # or a ConfigMap mount — see Kubernetes below
+step_library_dir: /data/steps
+artifacts: {dir: /data/artifacts}
+logging: {dir: /data/logs}
+```
+
+```bash
+docker run -d \
+  -p 8000:8000 \
+  -v ./config.yaml:/etc/vectorstep/config.yaml:ro \
+  -v vectorstep-data:/data \
+  ghcr.io/bantex01/vectorstep:latest
+```
+
+The Gateway's container config additionally needs `identity.path` and
+`agents_dir` pointed at `/data` — its default identity path
+(`~/.vectorstep-gateway/identity`) is ephemeral per-container, which would
+regenerate the operator token on every recreation. See
+`samples/config.yaml.example` in each repo for the full annotated
+container-paths block.
+
+**Evaluating the pair locally?** VectorStep ships a `docker-compose.yaml`
+(`deploy/docker-compose.yaml`) that brings up both services from sibling
+checkouts with `docker compose up` — see `deploy/README.md` for the
+one-time operator-token bootstrap step. It's an evaluation/dev path, not a
+production one.
 
 ## Kubernetes deployment
 
-Target: ARM64 home lab cluster (Ubuntu snap k8s).
+Target: ARM64 home lab cluster (Ubuntu snap k8s), pulling the published GHCR
+images above.
 
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY src/ ./src/
-COPY config.yaml .
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
+Both repos ship plain, heavily-commented manifests under `deploy/k8s/`
+(`deployment.yaml`, `service.yaml`, `configmap.example.yaml`, `pvc.yaml`) —
+copy-and-adapt templates, not a generic chart. A Helm chart is deliberately
+out of scope for now: the manifests are the ground truth a chart would
+template, and templating them before there's a second real user to justify
+it is premature. See `deploy/k8s/README.md` in each repo for the exact
+`kubectl apply` order and secret setup.
 
-Build for ARM64:
+Two things worth knowing before you apply them:
 
-```bash
-docker buildx build --platform linux/arm64 -t orchestration-service:latest .
-```
+- **VectorStep runs `replicas: 1` with `strategy: Recreate`, and that's
+  required regardless of database backend** — the scheduler is in-process
+  and the dedup/event state is in-memory, so a second replica would
+  double-fire scheduled pipelines. PostgreSQL doesn't change this; it only
+  changes whether SQLite's single-writer limitation is also in play.
+- **Migrations run in-process at boot** (`create_tables()`, see
+  [Database](#database) above) when `database.auto_migrate` is `true` (the
+  default). With `replicas: 1` + `strategy: Recreate` that's safe and needs
+  no init container — the old pod is fully gone before the new one starts.
+  For a DBA-controlled cluster, set `auto_migrate: false` and run
+  `kubectl exec ... alembic upgrade head` (or a one-shot `Job`) before
+  rolling the new image instead.
 
-Pipeline configs (from `samples/pipelines/` or your own) delivered via
-Kubernetes ConfigMap mounted at `/app/pipelines/`. Step library (from
-`samples/steps/` or your own) delivered via a separate ConfigMap mounted at
-`/app/steps/`. Database: SQLite on a PersistentVolumeClaim for a
-single-replica deployment, or PostgreSQL (in-cluster or managed) for
-multi-replica — see [Database](#database) above. PostgreSQL is the only
-option once you run more than one replica, since SQLite has no concept of a
-network connection. Secrets (tokens) via Kubernetes Secrets as environment
-variables. Log files written to a PersistentVolumeClaim or redirected to
-stdout by omitting `logging.dir`.
+Secrets (Gateway tokens, webhook tokens, LLM provider keys) are delivered as
+a Kubernetes `Secret` referenced via `envFrom`, feeding the same `${VAR}`
+placeholders the config uses everywhere else — never baked into the
+ConfigMap or the image.
+
+## VM / systemd deployment
+
+For a plain VM or instance without a container runtime, both repos ship
+systemd units and a step-by-step install guide under `deploy/systemd/`
+(`install.md`, `*.service`, `env.example`) — code in
+`/opt/vectorstep/<service>`, config in `/etc/vectorstep/<service>/`, state in
+`/var/lib/vectorstep/<service>/`, logs in `/var/log/vectorstep/<service>/`.
+Both units support `systemctl reload` (pipelines/steps for VectorStep,
+agents for the Gateway) without dropping the process; a code, dependency, or
+database change needs `systemctl restart`.

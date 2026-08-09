@@ -24,6 +24,14 @@ Copy `samples/config.yaml.example` to `config.yaml` and edit. Values support
 The operator token (used by VectorStep to authenticate) is written to
 `<path>/device-auth.json` on first run.
 
+**Running in a container?** The default `~/.vectorstep-gateway/identity`
+resolves to a path inside the container's ephemeral filesystem, so a
+recreated container regenerates its identity — including the operator
+token VectorStep was configured with — and the pairing breaks. Set
+`identity.path` explicitly to somewhere on your mounted `/data` volume (e.g.
+`/data/identity`). See [Deployment](/docs/operations/deployment/#docker) for
+the full container config.
+
 ## `limits`
 
 | Field | Default | Description |

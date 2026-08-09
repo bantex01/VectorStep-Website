@@ -15,6 +15,22 @@ welcome. Patches are not accepted, and pull requests from forks are
 auto-closed — this is a policy about provenance, not a judgement on any
 particular contribution.
 
+## Versions and releases
+
+Tagging a release (`vX.Y.Z`) is what publishes a container image — see
+[Deployment](/docs/operations/deployment/) for pulling published images and
+running them, and each repo's `RELEASING.md` for the release process itself.
+An `edge` tag tracks the default branch; `latest` and the semver tag track
+the most recent release. An untagged local build reports `dev`.
+
+**VectorStep and the Gateway deploy as a matched pair.** There's no protocol
+version negotiation between them yet, so the only supported configuration is
+running matching release tags together — don't mix, say, VectorStep `v0.7.0`
+with Gateway `v0.5.0` and treat it as supported even if it happens to work.
+
+`GET /health` on both services reports the running version, which is the
+fastest way to confirm what's actually deployed in a given environment.
+
 ## Reporting a security issue
 
 Do not open a public issue for a suspected vulnerability. Use GitHub's
