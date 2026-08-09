@@ -47,6 +47,17 @@ asked — an owner can require `operational` + `accuracy` without touching
 | `accuracy` | Are its outputs actually good? | Judged accuracy (correct=1.0, partial=0.5, incorrect=0.0) over human/deterministic/run-level labels. |
 | `calibration` | Is its confidence number trustworthy? | The strongest bar — reuses the calibration bucket machinery from [Confidence](/docs/concepts/confidence/), with every previously-hardcoded constant now owner-settable. |
 
+Every tier here reads *accumulated history* — it can only ever report what a
+pipeline has already earned. Editing a step's prompt or swapping its model
+resets its calibration bucket, so a changed configuration has no history at
+all until it's run forward and marked for a while. [Replay / shadow
+evaluation](/docs/operations/replay-shadow-eval/) shortcuts that wait: it
+re-runs a bucket's own recorded, labelled inputs against the candidate
+configuration so the two are compared on identical evidence, without waiting
+for fresh production traffic. It feeds the *decision* to promote — it doesn't
+change how these tiers themselves are computed, and a replay batch's own
+results never count toward the tiers above (they stay `stage: testing`).
+
 **Strictly advisory — no automated gate, ever.** Promoting a pipeline stays
 exactly the [testing-vs-production workflow](/docs/concepts/stages/#promotion-workflow):
 a one-line `stage:` edit in YAML, `POST /reload`, reviewed in git like any

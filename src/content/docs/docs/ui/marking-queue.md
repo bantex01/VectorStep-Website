@@ -19,6 +19,8 @@ It lists every step with no `StepFeedback` (i.e. `human_marked` would not count 
 
 **Nothing can be marked from this page.** Every row links out to the run on `/ui/runs/{id}`, where the existing accuracy feedback widget (run-level and per-step) does the actual marking — the queue is a finder, not a second place feedback gets written.
 
+A step produced by a [replay batch](/docs/operations/replay-shadow-eval/) shows up here like any other unmarked `stage: testing` step, tagged **REPLAY** instead of "failed check" or "run feedback" — that tag takes priority over the others since it's the fact a marker needs first: this step's output came from a candidate configuration under evaluation, not a normal pipeline run.
+
 ## Relationship to the confidence system
 
 The marking queue is one of several places confidence and calibration make themselves visible in the UI — for the readiness-criteria and calibration angle on this same underlying data (why marked evidence matters, how `min_human_marked` and the calibration bins use it), see [How confidence and calibration work — Where to actually see all of this](/docs/concepts/confidence/#where-to-actually-see-all-of-this).
