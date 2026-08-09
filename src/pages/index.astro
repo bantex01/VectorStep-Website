@@ -1,17 +1,35 @@
 ---
 // VectorStep marketing landing page — self-contained, dark-only, Tailwind utilities.
 // VectorStep is the single brand — open-source engine and commercial SaaS alike.
-// Docs live under /docs/ (Starlight). Console login is a placeholder until the
-// SaaS console exists — change CONSOLE_URL in one place.
+// Docs live under /docs/ (Starlight).
 import { Code } from 'astro:components';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 
-const CONSOLE_URL = 'https://console.vectorstep.io'; // TODO: real console URL when SaaS lands
-const GITHUB_URL = 'https://github.com'; // TODO: real repo URL when public
+// Flip to 'public' on the day the engine repos go public. Nothing else changes.
+const RELEASE_STATE: 'preview' | 'public' = 'preview';
+
+const GITHUB_URL = 'https://github.com/bantex01/VectorStep';
+const CONTACT_EMAIL = 'alex@vectorstep.io';
+const isPublic = RELEASE_STATE === 'public';
 
 const screenshots = [
+  {
+    src: '/screenshots/pipeline-detail.jpg',
+    caption: 'Every pipeline’s steps, agents and run history in one page — the structure, not just the outcome',
+    label: 'Pipeline detail',
+  },
+  {
+    src: '/screenshots/run-detail.jpg',
+    caption: 'A run’s steps end to end — executor, duration and tokens for each, gating or not',
+    label: 'Run detail',
+  },
+  {
+    src: '/screenshots/runs.jpg',
+    caption: 'Every run with its team, duration and judged accuracy — filterable across pipelines and stages',
+    label: 'Runs',
+  },
   {
     src: '/screenshots/trust-panel.jpg',
     caption: 'Every gating decision explained — signal by signal, claim by claim, with the real numbers',
@@ -26,11 +44,6 @@ const screenshots = [
     src: '/screenshots/readiness.jpg',
     caption: 'Promotion readiness: evidence-based criteria a pipeline must earn before production',
     label: 'Readiness',
-  },
-  {
-    src: '/screenshots/runs.jpg',
-    caption: 'Every run with its team, duration and judged accuracy — filterable across pipelines and stages',
-    label: 'Runs',
   },
 ];
 
@@ -62,6 +75,21 @@ steps:
     deterministic_checks:
       - type: shell              # still breaching, live?
         command: ./checks/alert-still-firing.sh`;
+
+const simplePipelineYaml = `name: alert-triage
+description: Triage critical alerts and notify on completion
+trigger:
+  source: alertmanager
+  match: { severity: critical }
+
+steps:
+  - name: investigate
+    use: sre-investigation       # reusable step library
+    executor: gateway
+    executor_config:
+      agent: sre-agent
+    confidence_threshold: 0.75
+    on_low_confidence: escalate  # a human sees it instead`;
 ---
 
 <html lang="en" class="scroll-smooth">
@@ -104,6 +132,34 @@ steps:
       .card-hover:hover { border-color: #4f46e5; transform: translateY(-2px); }
       .expressive-code, .astro-code { font-family: 'JetBrains Mono Variable', monospace; }
       .shot { transition: opacity 0.7s ease; }
+
+      /* Simple/Gated pipeline tabs — CSS-only, no JS. First radio is `checked`
+         in the markup, so a no-JS/no-CSS visitor's browser still renders the
+         Simple panel first in document order. */
+      .pipeline-tabs input[type="radio"] {
+        position: absolute;
+        width: 1px; height: 1px;
+        padding: 0; margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .pipeline-tabs .tab-panel { display: none; }
+      .pipeline-tabs .tab-label {
+        cursor: pointer;
+        color: #71717a;
+        transition: color 0.15s, background-color 0.15s;
+      }
+      .pipeline-tabs #tab-simple:checked ~ .tab-shell #panel-simple,
+      .pipeline-tabs #tab-gated:checked ~ .tab-shell #panel-gated {
+        display: block;
+      }
+      .pipeline-tabs #tab-simple:checked ~ .tab-shell label[for="tab-simple"],
+      .pipeline-tabs #tab-gated:checked ~ .tab-shell label[for="tab-gated"] {
+        background: #27272a;
+        color: #e4e4e7;
+      }
     </style>
 
     <!-- ======================= Nav ======================= -->
@@ -120,11 +176,20 @@ steps:
           <a href="/docs/getting-started/quick-start/" class="no-underline hover:text-gray-100" style="color: inherit;">Docs</a>
         </div>
         <div class="flex items-center gap-3">
-          <a href={GITHUB_URL} class="hidden text-sm font-medium text-gray-400 no-underline hover:text-gray-100 sm:block">GitHub</a>
-          <a
-            href={CONSOLE_URL}
-            class="rounded-md bg-accent-600 px-4 py-1.5 text-sm font-semibold text-white no-underline transition-colors hover:bg-accent-500"
-          >Console login</a>
+          {isPublic && (
+            <a href={GITHUB_URL} class="hidden text-sm font-medium text-gray-400 no-underline hover:text-gray-100 sm:block">GitHub</a>
+          )}
+          {isPublic ? (
+            <a
+              href={GITHUB_URL}
+              class="rounded-md bg-accent-600 px-4 py-1.5 text-sm font-semibold text-white no-underline transition-colors hover:bg-accent-500"
+            >GitHub</a>
+          ) : (
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              class="rounded-md bg-accent-600 px-4 py-1.5 text-sm font-semibold text-white no-underline transition-colors hover:bg-accent-500"
+            >Request access</a>
+          )}
         </div>
       </nav>
     </header>
@@ -206,6 +271,140 @@ steps:
           VectorStep never trusts one number — it builds a trust vector from independent signals and
           gates every autonomous action on the <strong class="text-gray-200">weakest</strong> one. Not an average. The floor.
         </p>
+      </div>
+    </section>
+
+    <!-- ======================= The orchestrator ======================= -->
+    <section id="orchestrator" class="border-t border-gray-800/60 bg-gray-900/40">
+      <div class="mx-auto max-w-6xl px-6 py-20">
+        <p class="text-sm font-semibold uppercase tracking-widest text-accent-400">What you get on day one</p>
+        <h2 class="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">
+          A pipeline runner first. The trust machinery is opt-in.
+        </h2>
+        <p class="mt-5 max-w-2xl text-base leading-relaxed text-gray-400">
+          Every gating signal on this page — verifier, grounding, calibration, readiness — is
+          additive. None of it is required to run a production pipeline.
+        </p>
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">YAML pipelines, git-controlled</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Triggers, steps and flow control are declarative config, versioned like everything
+              else you own. No UI required to author or ship one.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Parallel groups & dynamic fan-out</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Fan out over discovered work at runtime, run branches concurrently, and merge the
+              results back into the next step.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Flow control that expects failure</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Conditional steps, a per-step failure policy, and automatic retries — because real
+              pipelines don't get to assume every step succeeds.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Cron schedules & sub-pipelines</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Trigger on a schedule as easily as on a webhook, and chain pipelines together
+              without an external scheduler in the loop.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Human-in-the-loop, natively</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Route an approval to Telegram, Slack or Teams and the pipeline waits — no separate
+              approvals system to bolt on.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Any provider, any tool, any webhook</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Any LLM provider and MCP tools through the Gateway; webhooks in from any source,
+              notifications out to any destination.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step library emphasis: the reason a `use:` pipeline stays short -->
+        <div class="mt-8 rounded-xl border border-accent-500/30 bg-gray-950 p-8">
+          <h3 class="text-lg font-semibold text-gray-100">Write a step once. <span class="text-accent-300">use:</span> it everywhere.</h3>
+          <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-400">
+            The reusable step library is why the config in the next section is a dozen lines
+            instead of a hundred. Write the prompt template and the output contract once, then
+            reference it with <code class="rounded bg-gray-900 px-1.5 py-0.5 font-mono text-[13px] text-accent-300">use: sre-investigation</code>
+            from any pipeline. An inline pipeline — the kind with the prompt template and the
+            LLM output contract written out in full — gets long fast; a step-library pipeline
+            stays readable in review.
+          </p>
+        </div>
+
+        <!-- Technology pills, inherited from the former Integrations section -->
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+          {['Alertmanager', 'Grafana', 'Atlassian', 'Generic webhooks', 'Cron schedules', 'VectorStep Gateway', 'OpenClaw', 'Telegram', 'Slack', 'Teams', 'MCP', 'Prometheus', 'OpenTelemetry'].map((name) => (
+            <span class="rounded-full border border-gray-800 bg-gray-900 px-4 py-1.5 text-sm text-gray-300">{name}</span>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= Built for engineers ======================= -->
+    <section class="border-t border-gray-800/60">
+      <div class="mx-auto max-w-6xl px-6 py-20">
+        <p class="text-sm font-semibold uppercase tracking-widest text-accent-400">Developer experience</p>
+        <h2 class="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">
+          Built to fit the way you already ship software
+        </h2>
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Everything in git</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Every pipeline and every step is YAML in version control. Changes go through the
+              same code review as the rest of your codebase.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Hot reload, no restart</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              <code class="rounded bg-gray-950 px-1.5 py-0.5 font-mono text-[13px] text-accent-300">POST /reload</code>
+              or <code class="rounded bg-gray-950 px-1.5 py-0.5 font-mono text-[13px] text-accent-300">SIGHUP</code>
+              picks up config changes without dropping a run in flight.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Validate before you write</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              A dedicated validate endpoint checks a pipeline against the schema and never
+              mutates state — wire it into CI before anything merges.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">SQLite to Postgres, same code path</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              SQLite for zero-infra local development, Postgres for production — no branching
+              logic, no surprises when you promote.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <h3 class="text-base font-semibold text-gray-100">Metrics and tracing built in</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Prometheus metrics and OpenTelemetry tracing ship with the service — plug in your
+              existing stack, nothing to bolt on.
+            </p>
+          </div>
+          <div class="card-hover rounded-xl border border-accent-500/40 bg-gray-900 p-6">
+            <div class="mb-1 inline-flex items-center gap-1.5 rounded-full bg-accent-500/15 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-accent-300">Via MCP</div>
+            <h3 class="text-base font-semibold text-gray-100">Author from Claude Code or Claude Desktop</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-400">
+              Two MCP servers expose pipeline and agent authoring directly to an AI coding
+              assistant — write, inspect and iterate on pipelines without leaving your editor.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -339,7 +538,7 @@ steps:
         <div class="lg:sticky lg:top-24">
           <p class="text-sm font-semibold uppercase tracking-widest text-accent-400">Config-driven</p>
           <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">
-            The whole safety story is YAML you can read in review
+            The whole pipeline is YAML you can read in review
           </h2>
           <p class="mt-5 text-base leading-relaxed text-gray-400">
             No SDK, no DSL, no redeploy. Pipelines, reusable steps, verifiers, grounding,
@@ -356,14 +555,40 @@ steps:
             Read the pipeline schema docs →
           </a>
         </div>
-        <div class="overflow-hidden rounded-xl border border-gray-800 shadow-2xl">
-          <div class="flex items-center gap-2 border-b border-gray-800 bg-gray-900 px-4 py-2.5">
-            <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
-            <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
-            <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
-            <span class="ml-2 font-mono text-[11px] text-gray-500">pipelines/alert-triage-critical.yaml</span>
+        <div>
+          <div class="pipeline-tabs relative">
+            <input type="radio" name="pipeline-tab" id="tab-simple" checked />
+            <input type="radio" name="pipeline-tab" id="tab-gated" />
+
+            <div class="tab-shell overflow-hidden rounded-xl border border-gray-800 shadow-2xl">
+              <div class="flex items-center gap-2 border-b border-gray-800 bg-gray-900 px-4 py-2.5">
+                <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+                <div class="ml-3 flex items-center gap-1">
+                  <label for="tab-simple" class="tab-label rounded px-2.5 py-1 font-mono text-[12px] font-semibold">Simple</label>
+                  <label for="tab-gated" class="tab-label rounded px-2.5 py-1 font-mono text-[12px] font-semibold">Gated</label>
+                </div>
+              </div>
+              <div id="panel-simple" class="tab-panel">
+                <Code code={simplePipelineYaml} lang="yaml" theme="vesper" class="!m-0 !rounded-none !border-0 text-[13px] leading-relaxed" />
+                <p class="border-t border-gray-800 bg-gray-950 px-4 py-2.5 text-xs text-gray-500">
+                  No verifier, no grounding, no calibration, no readiness — a legitimate way to run this pipeline in production.
+                </p>
+              </div>
+              <div id="panel-gated" class="tab-panel">
+                <Code code={pipelineYaml} lang="yaml" theme="vesper" class="!m-0 !rounded-none !border-0 text-[13px] leading-relaxed" />
+                <p class="border-t border-gray-800 bg-gray-950 px-4 py-2.5 text-xs text-gray-500">
+                  The whole safety story is YAML you can read in review, too.
+                </p>
+              </div>
+            </div>
           </div>
-          <Code code={pipelineYaml} lang="yaml" theme="vesper" class="!m-0 !rounded-none !border-0 text-[13px] leading-relaxed" />
+          <p class="mt-4 text-sm text-gray-500">
+            <span class="font-medium text-gray-300">Gated</span> is <span class="font-medium text-gray-300">Simple</span> plus
+            four opt-in blocks — verifier, grounding, calibration, deterministic checks. Nothing in
+            Simple is removed to get there.
+          </p>
         </div>
       </div>
     </section>
@@ -402,22 +627,6 @@ steps:
       </div>
     </section>
 
-    <!-- ======================= Integrations ======================= -->
-    <section class="border-t border-gray-800/60 bg-gray-900/40">
-      <div class="mx-auto max-w-6xl px-6 py-20 text-center">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-50 sm:text-3xl">Source agnostic. Executor agnostic.</h2>
-        <p class="mx-auto mt-4 max-w-2xl text-base text-gray-400">
-          Alertmanager, Grafana, Atlassian or any webhook in — Gateway agents, OpenClaw, humans,
-          webhooks and sub-pipelines out. Adding a parser or executor touches zero core logic.
-        </p>
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
-          {['Alertmanager', 'Grafana', 'Atlassian', 'Generic webhooks', 'Cron schedules', 'VectorStep Gateway', 'OpenClaw', 'Telegram', 'Slack', 'Teams', 'MCP', 'Prometheus', 'OpenTelemetry'].map((name) => (
-            <span class="rounded-full border border-gray-800 bg-gray-900 px-4 py-1.5 text-sm text-gray-300">{name}</span>
-          ))}
-        </div>
-      </div>
-    </section>
-
     <!-- ======================= CTA ======================= -->
     <section class="glow border-t border-gray-800/60">
       <div class="mx-auto max-w-6xl px-6 py-24 text-center">
@@ -429,8 +638,12 @@ steps:
           about ten minutes.
         </p>
         <div class="mt-8 flex items-center justify-center gap-4">
-          <a href="/docs/getting-started/quick-start/" class="rounded-lg bg-accent-600 px-6 py-3 text-sm font-semibold text-white no-underline shadow-lg shadow-accent-600/25 transition-colors hover:bg-accent-500">Get started</a>
-          <a href={CONSOLE_URL} class="rounded-lg border border-gray-700 bg-gray-900/60 px-6 py-3 text-sm font-semibold text-gray-200 no-underline transition-colors hover:border-gray-500">Console login</a>
+          <a href="/docs/getting-started/quick-start/" class="rounded-lg bg-accent-600 px-6 py-3 text-sm font-semibold text-white no-underline shadow-lg shadow-accent-600/25 transition-colors hover:bg-accent-500">Read the docs</a>
+          {isPublic ? (
+            <a href={GITHUB_URL} class="rounded-lg border border-gray-700 bg-gray-900/60 px-6 py-3 text-sm font-semibold text-gray-200 no-underline transition-colors hover:border-gray-500">Get the code</a>
+          ) : (
+            <a href={`mailto:${CONTACT_EMAIL}`} class="rounded-lg border border-gray-700 bg-gray-900/60 px-6 py-3 text-sm font-semibold text-gray-200 no-underline transition-colors hover:border-gray-500">Request access</a>
+          )}
         </div>
       </div>
     </section>
@@ -442,14 +655,21 @@ steps:
           <img src="/favicon.svg" alt="" class="h-6 w-6" />
           <span class="text-sm font-semibold text-gray-300">VectorStep</span>
           <span class="hidden items-center gap-1.5 text-sm text-gray-600 sm:inline-flex">
-            — <a href={GITHUB_URL} class="inline-flex items-center gap-1 text-gray-500 no-underline hover:text-gray-300">open source at its core</a>
+            {isPublic ? (
+              <>— <a href={GITHUB_URL} class="inline-flex items-center gap-1 text-gray-500 no-underline hover:text-gray-300">open source at its core</a></>
+            ) : (
+              <>— Apache-2.0 · source available on request</>
+            )}
           </span>
         </div>
         <div class="flex items-center gap-6 text-sm text-gray-500">
           <a href="/docs/getting-started/quick-start/" class="no-underline hover:text-gray-300" style="color: inherit;">Docs</a>
           <a href="/docs/concepts/confidence/" class="no-underline hover:text-gray-300" style="color: inherit;">Trust &amp; calibration</a>
-          <a href={GITHUB_URL} class="no-underline hover:text-gray-300" style="color: inherit;">GitHub</a>
-          <a href={CONSOLE_URL} class="no-underline hover:text-gray-300" style="color: inherit;">Console</a>
+          {isPublic ? (
+            <a href={GITHUB_URL} class="no-underline hover:text-gray-300" style="color: inherit;">GitHub</a>
+          ) : (
+            <a href={`mailto:${CONTACT_EMAIL}`} class="no-underline hover:text-gray-300" style="color: inherit;">Request access</a>
+          )}
         </div>
       </div>
     </footer>

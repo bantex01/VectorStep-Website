@@ -2,20 +2,20 @@ server:
   host: 127.0.0.1
   port: 8300
 
-pipeline_config_dir: /Users/adalton/Development/github/VectorStep-Website/demo/pipelines
-step_library_dir: /Users/adalton/Development/github/VectorStep-Website/demo/steps
+pipeline_config_dir: ${VECTORSTEP_DEMO_PIPELINES_DIR}
+step_library_dir: ${VECTORSTEP_DEMO_STEPS_DIR}
 
 database:
-  url: postgresql+asyncpg://adalton@localhost:5432/vectorstep_demo
+  url: postgresql+asyncpg://localhost:5432/vectorstep_demo
 
 executors: {}
 
 logging:
   level: INFO
-  dir: /Users/adalton/Development/github/VectorStep-Website/demo/logs
+  dir: ${VECTORSTEP_DEMO_LOGS_DIR}
 
 artifacts:
-  dir: /Users/adalton/Development/github/VectorStep-Website/demo/artifacts
+  dir: ${VECTORSTEP_DEMO_ARTIFACTS_DIR}
   retention_days: 7
 
 dedup:

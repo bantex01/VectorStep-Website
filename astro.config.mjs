@@ -15,10 +15,10 @@ export default defineConfig({
       logo: { src: './public/favicon.svg' },
       favicon: '/favicon.svg?v=2',
       customCss: ['./src/styles/global.css'],
-      social: [
-        // TODO: point at the real GitHub org/repo once public
-        { icon: 'github', label: 'GitHub', href: 'https://github.com' },
-      ],
+      // No social entry while RELEASE_STATE (src/pages/index.astro) is 'preview' —
+      // a GitHub icon linking nowhere is worse than no icon. Restore this when
+      // RELEASE_STATE flips to 'public':
+      // social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/bantex01/VectorStep' }],
       sidebar: [
         { label: 'Getting Started', items: [{ autogenerate: { directory: 'docs/getting-started' } }] },
         { label: 'Concepts', items: [{ autogenerate: { directory: 'docs/concepts' } }] },

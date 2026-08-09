@@ -5,10 +5,14 @@ without touching the real `vectorstep` database or spending LLM tokens. Everythi
 UI renders — trust panels, calibration bins, readiness card, dashboards — is
 computed from these rows by the real service code.
 
-Run with the VectorStep service venv, against the demo instance's DB:
+Run with the VectorStep service venv, against the demo instance's DB. Set
+VECTORSTEP_SERVICE_DIR to wherever the VectorStep (service) repo is checked
+out — it's added to sys.path so this script can import the service's own
+models and code:
 
-    cd /Users/adalton/Development/github/VectorStep/service
-    .venv/bin/python /Users/adalton/Development/github/VectorStep-Website/scripts/seed-demo-data.py
+    cd /path/to/VectorStep/service
+    VECTORSTEP_SERVICE_DIR=/path/to/VectorStep/service \
+      .venv/bin/python /path/to/VectorStep-Website/scripts/seed-demo-data.py
 
 Prereqs: `createdb vectorstep_demo`, then start the service once against it (creates
 tables) using the demo CONFIG_PATH (see the website repo README).
@@ -25,6 +29,7 @@ The story the data tells (deliberate, mirrors the landing page):
 
 import asyncio
 import json
+import os
 import random
 import sys
 import uuid
@@ -33,7 +38,7 @@ from pathlib import Path
 
 import yaml
 
-SERVICE_DIR = Path("/Users/adalton/Development/github/VectorStep/service")
+SERVICE_DIR = Path(os.environ.get("VECTORSTEP_SERVICE_DIR", "../VectorStep/service"))
 sys.path.insert(0, str(SERVICE_DIR))
 
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine  # noqa: E402
@@ -44,7 +49,7 @@ from src.db.models import (  # noqa: E402
 )
 from src.pipeline.versioning import prompt_hash  # noqa: E402
 
-DB_URL = "postgresql+asyncpg://adalton@localhost:5432/vectorstep_demo"
+DB_URL = "postgresql+asyncpg://localhost:5432/vectorstep_demo"
 DEMO_PIPELINE_DIR = Path(sys.argv[1]) if len(sys.argv) > 1 else None
 
 random.seed(1912)
