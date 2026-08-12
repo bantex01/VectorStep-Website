@@ -55,7 +55,7 @@ DEMO_PIPELINE_DIR = Path(sys.argv[1]) if len(sys.argv) > 1 else None
 random.seed(1912)
 NOW = datetime.utcnow()
 
-MODEL = "claude-sonnet-4-5"
+MODEL = "claude-sonnet-5"
 MODEL_FAST = "claude-haiku-4-5"
 PROVIDER = "anthropic"
 

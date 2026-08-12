@@ -29,5 +29,13 @@ Regenerating the demo screenshots is documented in the private dev-docs repo.
 
 ## Licence
 
-All rights reserved. Unlike the engine repos, this repo carries no open-source
-licence — it is marketing content, not engine code.
+This repo is **split**:
+
+- **`src/content/docs/**` — Apache-2.0** (see `LICENSE-DOCS`), the same licence
+  as the engine repos. Documentation pull requests are welcome, and the pages are
+  full of pipeline configs people are meant to copy.
+- **Everything else — all rights reserved.** The landing page, styling,
+  components, brand assets, and screenshots are the project's visual identity,
+  not its documentation, and stay closed.
+
+See `CONTRIBUTING.md` for what that means in practice.

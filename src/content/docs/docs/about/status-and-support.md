@@ -9,11 +9,11 @@ VectorStep is maintained by a single author as a best-effort open source
 project. There is no SLA and no bug bounty. Only the latest released version
 receives fixes — there are no long-term support branches.
 
-Issues are open and bug reports are wanted; see
-[Licence & contributions](/docs/about/licence-and-contributions/) for what's
-welcome. Patches are not accepted, and pull requests from forks are
-auto-closed — this is a policy about provenance, not a judgement on any
-particular contribution.
+Issues are open and bug reports are wanted, and pull requests are welcome —
+see [Licence & contributions](/docs/about/licence-and-contributions/) for what
+that means in practice. There is no CLA and no copyright assignment. Because
+this is a single-maintainer project run alongside a full-time job, issues and
+pull requests get read, but not always quickly and not always the same week.
 
 ## Versions and releases
 
