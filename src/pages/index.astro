@@ -206,9 +206,9 @@ steps:
           AI pipelines that <span class="gradient-text">earn the right</span> to act
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-400">
-          VectorStep turns any webhook into a multi-step AI pipeline — and only lets a step act
-          autonomously when its confidence survives a second opinion, evidence checks,
-          hard deterministic facts, and its own measured track record.
+          VectorStep turns webhooks into multi-step AI pipelines. You decide what a step has to
+          prove — a second opinion, evidence checks, deterministic facts, a track record —
+          before it acts on its own.
         </p>
         <div class="mt-9 flex items-center justify-center gap-4">
           <a
@@ -231,7 +231,7 @@ steps:
               <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
               <span id="shot-label" class="ml-3 rounded bg-gray-800 px-2 py-0.5 text-[11px] font-medium text-gray-400">{screenshots[0].label}</span>
             </div>
-            <div id="carousel" class="relative aspect-[1530/803] w-full">
+            <div id="carousel" class="group relative aspect-[1530/803] w-full cursor-zoom-in">
               {screenshots.map((s, i) => (
                 <img
                   src={s.src}
@@ -241,6 +241,9 @@ steps:
                   loading={i === 0 ? 'eager' : 'lazy'}
                 />
               ))}
+              <span class="pointer-events-none absolute bottom-3 right-3 rounded-full border border-gray-700 bg-gray-950/80 px-3 py-1 text-xs font-medium text-gray-300 opacity-0 transition-opacity group-hover:opacity-100">
+                ⤢ Click to enlarge
+              </span>
             </div>
           </figure>
           <p id="shot-caption" class="mt-4 text-sm text-gray-400">{screenshots[0].caption}</p>
@@ -268,8 +271,8 @@ steps:
         <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-gray-400">
           LLMs can be completely wrong and still sound calm, structured, and sure of themselves.
           Confidence, as an agent reports it, is a <em>style of writing</em> as much as a measurement.
-          VectorStep never trusts one number — it builds a trust vector from independent signals and
-          gates every autonomous action on the <strong class="text-gray-200">weakest</strong> one. Not an average. The floor.
+          VectorStep doesn't have to rely on one number - it can build a trust vector from independent
+          signals and gate an autonomous action on the <strong class="text-gray-200">weakest</strong> one. Not an average. The floor.
         </p>
       </div>
     </section>
@@ -282,7 +285,7 @@ steps:
           A pipeline runner first. The trust machinery is opt-in.
         </h2>
         <p class="mt-5 max-w-2xl text-base leading-relaxed text-gray-400">
-          Every gating signal on this page — verifier, grounding, calibration, readiness — is
+          Every gating signal on this page - verifier, grounding, calibration, readiness - is
           additive. None of it is required to run a production pipeline.
         </p>
         <div class="mt-12 grid gap-5 md:grid-cols-3">
@@ -308,10 +311,10 @@ steps:
             </p>
           </div>
           <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
-            <h3 class="text-base font-semibold text-gray-100">Cron schedules & sub-pipelines</h3>
+            <h3 class="text-base font-semibold text-gray-100">Replay before you promote</h3>
             <p class="mt-2 text-sm leading-relaxed text-gray-400">
-              Trigger on a schedule as easily as on a webhook, and chain pipelines together
-              without an external scheduler in the loop.
+              Rerun a past run from any step to debug it, or replay recent production runs
+              against a candidate model or prompt before you promote it.
             </p>
           </div>
           <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
@@ -322,32 +325,51 @@ steps:
             </p>
           </div>
           <div class="card-hover rounded-xl border border-gray-800 bg-gray-900 p-6">
-            <h3 class="text-base font-semibold text-gray-100">Any provider, any tool, any webhook</h3>
+            <h3 class="text-base font-semibold text-gray-100">Cost accounting, built in</h3>
             <p class="mt-2 text-sm leading-relaxed text-gray-400">
-              Any LLM provider and MCP tools through the Gateway; webhooks in from any source,
-              notifications out to any destination.
+              Every step's spend is priced per model and rolled up per pipeline, team and
+              provider — with budget caps to stop a run before it gets expensive.
             </p>
           </div>
         </div>
 
         <!-- Step library emphasis: the reason a `use:` pipeline stays short -->
-        <div class="mt-8 rounded-xl border border-accent-500/30 bg-gray-950 p-8">
-          <h3 class="text-lg font-semibold text-gray-100">Write a step once. <span class="text-accent-300">use:</span> it everywhere.</h3>
-          <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-400">
-            The reusable step library is why the config in the next section is a dozen lines
-            instead of a hundred. Write the prompt template and the output contract once, then
-            reference it with <code class="rounded bg-gray-900 px-1.5 py-0.5 font-mono text-[13px] text-accent-300">use: sre-investigation</code>
-            from any pipeline. An inline pipeline — the kind with the prompt template and the
-            LLM output contract written out in full — gets long fast; a step-library pipeline
-            stays readable in review.
-          </p>
-        </div>
-
-        <!-- Technology pills, inherited from the former Integrations section -->
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
-          {['Alertmanager', 'Grafana', 'Atlassian', 'Generic webhooks', 'Cron schedules', 'VectorStep Gateway', 'OpenClaw', 'Telegram', 'Slack', 'Teams', 'MCP', 'Prometheus', 'OpenTelemetry'].map((name) => (
-            <span class="rounded-full border border-gray-800 bg-gray-900 px-4 py-1.5 text-sm text-gray-300">{name}</span>
-          ))}
+        <div class="mt-8 grid gap-8 rounded-xl border border-accent-500/30 bg-gray-950 p-8 md:grid-cols-2 md:items-center">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-100">Write a step once. <span class="text-accent-300">use:</span> it everywhere.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-gray-400">
+              The reusable step library is why a real pipeline config
+              (<a href="#config" class="text-accent-300 no-underline hover:underline">see it below ↓</a>)
+              stays a dozen lines instead of a hundred. Write the prompt template and the output
+              contract once, then reference it with
+              <code class="rounded bg-gray-900 px-1.5 py-0.5 font-mono text-[13px] text-accent-300">use: sre-investigation</code>
+              from any pipeline.
+            </p>
+            <p class="mt-3 text-sm leading-relaxed text-gray-400">
+              It's more than a shortcut: every pipeline that uses a library step feeds its accuracy
+              and calibration data back to it — tracked per model and prompt version — so the step
+              your team shares gets more provably trustworthy the more it's relied on, not just
+              shorter to write.
+            </p>
+          </div>
+          <figure class="group relative overflow-hidden rounded-xl border border-gray-800 bg-gray-900 shadow-xl" style="margin: 0;">
+            <div class="flex items-center gap-1.5 border-b border-gray-800 bg-gray-900 px-4 py-2.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-gray-700"></span>
+              <span class="ml-3 rounded bg-gray-800 px-2 py-0.5 text-[11px] font-medium text-gray-400">Step Library</span>
+            </div>
+            <img
+              src="/screenshots/step-library.jpg"
+              alt="The step library UI, showing a library step's per-pipeline analytics: agent, model, run count, success rate and average tokens"
+              class="w-full cursor-zoom-in object-cover object-top"
+              loading="lazy"
+              data-lightbox="true"
+            />
+            <span class="pointer-events-none absolute bottom-3 right-3 rounded-full border border-gray-700 bg-gray-950/80 px-3 py-1 text-xs font-medium text-gray-300 opacity-0 transition-opacity group-hover:opacity-100">
+              ⤢ Click to enlarge
+            </span>
+          </figure>
         </div>
       </div>
     </section>
@@ -674,6 +696,24 @@ steps:
       </div>
     </footer>
 
+    <!-- ======================= Screenshot lightbox ======================= -->
+    <div
+      id="lightbox"
+      style="display: none;"
+      class="fixed inset-0 z-[100] cursor-zoom-out items-center justify-center bg-black/90 p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Screenshot preview"
+    >
+      <button
+        id="lightbox-close"
+        type="button"
+        class="absolute right-5 top-5 rounded-full border border-gray-700 bg-gray-900/80 px-3 py-1.5 text-sm text-gray-300 no-underline transition-colors hover:text-white"
+        aria-label="Close preview"
+      >Close ✕</button>
+      <img id="lightbox-img" src="" alt="" class="max-h-[88vh] max-w-[92vw] cursor-auto rounded-lg border border-gray-800 object-contain shadow-2xl" />
+    </div>
+
     <script>
       // Hero screenshot carousel: crossfade every 5s, dots jump, pause on hover.
       const shots = document.querySelectorAll<HTMLImageElement>('#carousel .shot');
@@ -710,6 +750,43 @@ steps:
       carousel.addEventListener('mouseenter', () => clearInterval(timer));
       carousel.addEventListener('mouseleave', start);
       start();
+
+      // Screenshot lightbox: click any screenshot to see it full-size.
+      const lightbox = document.getElementById('lightbox')!;
+      const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+      const lightboxClose = document.getElementById('lightbox-close')!;
+
+      function openLightbox(src: string, alt: string) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt;
+        lightbox.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightbox.style.display = 'none';
+        lightboxImg.src = '';
+        document.body.style.overflow = '';
+      }
+
+      // Carousel images are stacked absolutely, so open whichever one is
+      // currently showing rather than trusting which <img> received the click.
+      carousel.addEventListener('click', () => {
+        const img = shots[current];
+        openLightbox(img.src, img.alt);
+      });
+
+      document.querySelectorAll<HTMLImageElement>('img[data-lightbox]').forEach((img) => {
+        img.addEventListener('click', () => openLightbox(img.src, img.alt));
+      });
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+      lightboxClose.addEventListener('click', closeLightbox);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+      });
     </script>
   </body>
 </html>
