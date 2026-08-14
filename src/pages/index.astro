@@ -16,34 +16,44 @@ const isPublic = RELEASE_STATE === 'public';
 
 const screenshots = [
   {
-    src: '/screenshots/pipeline-detail.jpg',
+    src: '/screenshots/pipeline-detail.jpg?v=2',
     caption: 'Every pipeline’s steps, agents and run history in one page — the structure, not just the outcome',
     label: 'Pipeline detail',
   },
   {
-    src: '/screenshots/run-detail.jpg',
+    src: '/screenshots/run-detail.jpg?v=2',
     caption: 'A run’s steps end to end — executor, duration and tokens for each, gating or not',
     label: 'Run detail',
   },
   {
-    src: '/screenshots/runs.jpg',
+    src: '/screenshots/runs.jpg?v=2',
     caption: 'Every run with its team, duration and judged accuracy — filterable across pipelines and stages',
     label: 'Runs',
   },
   {
-    src: '/screenshots/trust-panel.jpg',
+    src: '/screenshots/trust-panel.jpg?v=2',
     caption: 'Every gating decision explained — signal by signal, claim by claim, with the real numbers',
     label: 'Trust panel',
   },
   {
-    src: '/screenshots/calibration.jpg',
+    src: '/screenshots/calibration.jpg?v=2',
     caption: 'Calibration flags overconfidence in plain English — per agent, model and prompt version',
     label: 'Calibration',
   },
   {
-    src: '/screenshots/readiness.jpg',
+    src: '/screenshots/readiness.jpg?v=2',
     caption: 'Promotion readiness: evidence-based criteria a pipeline must earn before production',
     label: 'Readiness',
+  },
+  {
+    src: '/screenshots/insights-teams.jpg?v=2',
+    caption: 'Runs, tokens and spend broken down by team — the same numbers a finance conversation needs',
+    label: 'Team insights',
+  },
+  {
+    src: '/screenshots/insights-providers.jpg?v=2',
+    caption: 'One provider versus another, head to head — calls, tokens and duration compared over time',
+    label: 'Provider insights',
   },
 ];
 
@@ -222,7 +232,7 @@ steps:
         </div>
 
         <!-- Screenshot carousel -->
-        <div class="relative mx-auto mt-16 max-w-5xl">
+        <div class="relative mx-auto mt-16 max-w-3xl">
           <div class="absolute -inset-6 rounded-3xl bg-accent-600/10 blur-3xl"></div>
           <figure class="relative overflow-hidden rounded-xl border border-gray-800 bg-gray-900 shadow-2xl" style="margin: 0;">
             <div class="flex items-center gap-1.5 border-b border-gray-800 bg-gray-900 px-4 py-2.5">
@@ -360,7 +370,7 @@ steps:
               <span class="ml-3 rounded bg-gray-800 px-2 py-0.5 text-[11px] font-medium text-gray-400">Step Library</span>
             </div>
             <img
-              src="/screenshots/step-library.jpg"
+              src="/screenshots/step-library.jpg?v=2"
               alt="The step library UI, showing a library step's per-pipeline analytics: agent, model, run count, success rate and average tokens"
               class="w-full cursor-zoom-in object-cover object-top"
               loading="lazy"
@@ -631,7 +641,7 @@ steps:
             </p>
             <figure class="group relative mt-6 overflow-hidden rounded-lg border border-gray-800">
               <img
-                src="/screenshots/insights-models.jpg"
+                src="/screenshots/insights-models.jpg?v=2"
                 alt="Insights model comparison table: calls, failures, avg duration, tokens and cost per model"
                 class="w-full cursor-zoom-in object-cover object-top"
                 loading="lazy"
@@ -651,7 +661,7 @@ steps:
             </p>
             <figure class="group relative mt-6 overflow-hidden rounded-lg border border-gray-800">
               <img
-                src="/screenshots/readiness-detail.jpg"
+                src="/screenshots/readiness-detail.jpg?v=2"
                 alt="Promotion readiness card showing per-step criteria - runs, confidence, accuracy and calibration bands"
                 class="w-full cursor-zoom-in object-cover object-top"
                 loading="lazy"
@@ -670,7 +680,7 @@ steps:
             </p>
             <figure class="group relative mt-6 overflow-hidden rounded-lg border border-gray-800">
               <img
-                src="/screenshots/marking-queue.jpg"
+                src="/screenshots/marking-queue.jpg?v=2"
                 alt="Marking queue showing unmarked steps grouped by pipeline, with coverage percentage"
                 class="w-full cursor-zoom-in object-cover object-top"
                 loading="lazy"
