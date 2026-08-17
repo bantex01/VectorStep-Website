@@ -72,6 +72,11 @@ are already present and everything works automatically.
 files are in place. The service continues to run normally — only openclaw
 steps are affected.
 
+Before reaching for this executor, see [Using OpenClaw](/docs/guides/using-openclaw/)
+for exactly what it trades away — grounding, per-model/per-tool analytics,
+cost accounting, and trace visibility all depend on the `gateway` executor
+specifically.
+
 ### `gateway` — VectorStep Gateway WebSocket
 
 **`executor: gateway`** — Invokes agents via the VectorStep Gateway WebSocket API. Token-based auth (no device identity required). The VectorStep Gateway is a separate service that can run different model backends (Anthropic, OpenRouter, Ollama, Google) and MCP tool configurations independent of OpenClaw.

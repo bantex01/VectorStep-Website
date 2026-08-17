@@ -154,6 +154,12 @@ doing the work — truncation never makes the agent itself less capable, only
 makes grounding (and a human reviewer) less able to check its work after the
 fact.
 
+See [Grounding keeps flagging real evidence as
+unsupported](/docs/troubleshooting/fixing-grounding-accuracy/) for a
+step-by-step fix, including a third truncation point — the grounding
+judge's own `max_tokens` — that produces a different symptom (a parse
+failure, not a low score) from the two cutoffs above.
+
 ### The other blind spot this fixes: knowing what was actually asked
 
 Grounding (and critic-mode verifiers) are shown the primary's *original

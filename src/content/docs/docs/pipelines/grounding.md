@@ -48,6 +48,11 @@ trace has no tool activity, record `grounding_score = NULL` ("no evidence
 trail to check"), never `0` ("claims are unsupported"). Grounding is not yet
 wired into parallel/fan-out branches — sequential steps only.
 
+This means `grounding: { enforce: true }` on an `executor: openclaw` step is
+not an error — it's a silent no-op, forever, since G never leaves `NULL` on
+that executor. See [Using OpenClaw](/docs/guides/using-openclaw/) for this
+and the rest of what the `openclaw` executor doesn't provide.
+
 ```yaml
 steps:
   - name: investigate
@@ -86,7 +91,11 @@ executor) to raise the Gateway-side cap for that step, *then* raise
 same cutoff from the judge's transcript-formatting step to the Gateway's own
 capture step. Either cutoff being too low produces the identical symptom (a
 claim that looks unsupported but genuinely wasn't), so if grounding keeps
-flagging claims you believe are backed by real evidence, check both.
+flagging claims you believe are backed by real evidence, check both. See
+[Grounding keeps flagging real evidence as
+unsupported](/docs/troubleshooting/fixing-grounding-accuracy/) for a
+worked walkthrough, including the judge's own `max_tokens` as a third,
+differently-symptomed truncation point.
 :::
 
 **Soft failure.** Like the verifier, a grounding call that errors or times out
@@ -382,3 +391,6 @@ prior step's structured output as template variables.
   that runs before grounding in the gate formula.
 - **[How confidence and calibration work](/docs/concepts/confidence/)** — the
   plain-language explanation of the whole trust vector.
+- **[Grounding keeps flagging real evidence as
+  unsupported](/docs/troubleshooting/fixing-grounding-accuracy/)** — if
+  scores look wrong in practice, start here.

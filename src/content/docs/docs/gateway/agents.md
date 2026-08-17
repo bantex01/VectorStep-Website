@@ -88,12 +88,8 @@ as it already does for the per-request form. OpenAI's equivalent
 ## `soul.md`
 
 The system prompt. Written in Markdown, sent as the `system` message to the
-LLM on every call.
-
-Good soul files are:
-- **Narrow in scope** — describe exactly what this agent does and does not do
-- **Explicit about output format** — tell the model to return JSON only, no preamble
-- **Clear on confidence scoring** — explain what high/low confidence means for this agent's task
+LLM on every call. For what makes a soul.md — and an agent's scope and tool
+grants — actually good, see [Writing good agents](/docs/guides/writing-good-agents/).
 
 :::note
 Editing `agent.yaml` or `soul.md` changes the agent's `version` (a content

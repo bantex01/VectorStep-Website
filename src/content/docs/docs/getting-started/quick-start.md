@@ -126,6 +126,15 @@ curl http://localhost:8000/runs/<run_id>  # full detail with per-step confidence
 
 ## Where next
 
+If any of this — the Gateway, agents, MCP tools, confidence gating — is new
+to you, **don't jump straight to the reference docs below.** Go to
+[**Tutorials**](/docs/tutorials/build-your-first-agent/) next: it builds a
+real agent from scratch, wires it to two MCP servers, and then turns on
+gating one signal at a time, hands-on. It builds directly on the pipeline
+you just triggered.
+
+Once you're comfortable with the mechanics:
+
 - **[How confidence and calibration work](/docs/concepts/confidence/)** — the
   trust vector (S/V/G/D) and every knob that affects it. Read this before
   turning on any enforcement.
