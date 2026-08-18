@@ -2,12 +2,12 @@
 title: "Tutorial: turn on the trust knobs"
 description: Take the pipeline from the previous tutorial and add a confidence floor, then a verifier — rungs 1 and 2 of the trust ladder, hands-on.
 sidebar:
-  order: 3
+  order: 2
 ---
 
 [Build your first agent](/docs/tutorials/build-your-first-agent/) got
 `alert-triage` running your own `first-responder` agent with no gating at
-all — rung 0 on [the trust ladder](/docs/tutorials/adding-trust/). This
+all — rung 0 on [the trust ladder](/docs/guides/adding-trust/). This
 tutorial climbs two rungs on that exact pipeline: a confidence floor, then a
 second opinion.
 
@@ -122,13 +122,16 @@ says today.
 
 ## Where next
 
-You've climbed rungs 1 and 2. The rest of the ladder — grounding,
-deterministic checks, calibration, readiness — follows the same additive
-pattern and is documented, but not as a click-by-click tutorial, at:
+You've climbed rungs 1 and 2. Rung 3 (grounding) has its own hands-on
+tutorial next; deterministic checks, calibration, and readiness follow the
+same additive pattern and are documented, but not yet as click-by-click
+tutorials:
 
-- **[Adding trust, one signal at a time](/docs/tutorials/adding-trust/)**
-  — rungs 3 through 6, and when climbing further is (and isn't) worth it.
-- **[Grounding](/docs/pipelines/grounding/)** — the deterministic-checks
-  sibling to verifiers, for facts that don't need a model in the loop at all.
+- **[Adding trust, one signal at a time](/docs/guides/adding-trust/)**
+  — the full ladder, and when climbing further is (and isn't) worth it.
 - **[Calibration](/docs/pipelines/calibration/)** — once this step has real
   run history, check whether its "90% confident" has actually meant 90%.
+
+Next in the series: **[Turn on grounding](/docs/tutorials/turning-on-grounding/)**,
+then fan-out, artifacts, notifications, budget, metrics, and finally
+[promoting it to production](/docs/tutorials/promoting-to-production/).

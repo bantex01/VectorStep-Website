@@ -197,7 +197,7 @@ response fails validation. Everything else in the JSON above
 available to any later step as `{{steps.triage.upstream_incident}}`.
 
 Notice what's *not* here: no `confidence_threshold`, no `on_low_confidence`,
-no verifier. This is rung 0 on [the trust ladder](/docs/tutorials/adding-trust/)
+no verifier. This is rung 0 on [the trust ladder](/docs/guides/adding-trust/)
 — a fully working pipeline with no gating at all, which is a legitimate place
 to stop for a step that only informs rather than acts.
 
@@ -240,7 +240,7 @@ real tool call in the agent's own trace.
   soul.md-vs-prompt split and the `{{steps.x.y}}` hyphen gotcha.
 - **[Turn on the trust knobs](/docs/tutorials/turn-on-the-knobs/)** —
   take this exact pipeline and add a confidence floor and a verifier.
-- **[Adding trust, one signal at a time](/docs/tutorials/adding-trust/)**
+- **[Adding trust, one signal at a time](/docs/guides/adding-trust/)**
   — the full ladder this tutorial and the next one are climbing.
 - **[Creating agents](/docs/gateway/agents/)** — the full `agent.yaml`
   reference, including scoping `tools:` to specific tool names and model

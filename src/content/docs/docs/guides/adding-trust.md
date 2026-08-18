@@ -2,7 +2,7 @@
 title: Adding trust, one signal at a time
 description: A ladder for introducing gating signals one at a time — start with nothing, and climb only as far as the risk of the action justifies.
 sidebar:
-  order: 2
+  order: 1
 ---
 
 Every signal below is optional and additive. A pipeline with none of them

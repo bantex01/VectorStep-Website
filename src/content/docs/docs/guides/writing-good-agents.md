@@ -2,7 +2,7 @@
 title: Writing good agents
 description: Practical principles for scoping, tooling, prompting and versioning an agent well — narrow jobs, minimal tools, honest uncertainty.
 sidebar:
-  order: 1
+  order: 2
 ---
 
 Nothing in this guide is enforced by the schema — an agent can be as broad,

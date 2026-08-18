@@ -2,10 +2,10 @@
 title: Choosing confidence thresholds
 description: How to pick an actual confidence_threshold number, and what to do with on_low_confidence — not just what the knob does, but what to set it to.
 sidebar:
-  order: 3
+  order: 5
 ---
 
-[Adding trust, one signal at a time](/docs/tutorials/adding-trust/) and [how
+[Adding trust, one signal at a time](/docs/guides/adding-trust/) and [how
 confidence and calibration work](/docs/concepts/confidence/) explain what
 `confidence_threshold` *does*. This guide is the question those pages don't
 answer: what number do you actually put there?
@@ -61,7 +61,7 @@ enforced calibration to a step can only pull its effective score down, never
 up. A threshold that was well-calibrated for raw self-report alone can start
 escalating far more often than expected the moment a new signal is turned
 on, and that's not a bug to route around — it's the new signal doing its
-job. When you climb a rung on [the trust ladder](/docs/tutorials/adding-trust/),
+job. When you climb a rung on [the trust ladder](/docs/guides/adding-trust/),
 watch the step's escalate rate for a while before assuming the threshold
 still belongs where it was.
 
@@ -89,3 +89,6 @@ explanations, and they call for different fixes:
 - **[Verifiers](/docs/pipelines/verifiers/)** — the signal most likely to
   change a step's effective score out from under a threshold you already
   tuned.
+- **[Choosing readiness criteria](/docs/guides/choosing-readiness-criteria/)**
+  — the same "what number do I actually pick" question, one level up, for
+  promoting a whole pipeline rather than gating one step.

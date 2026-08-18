@@ -2,7 +2,7 @@
 title: Using OpenClaw
 description: You can point a step at executor:openclaw instead of the VectorStep Gateway — here's exactly what that trades away, so it's a deliberate choice, not a surprise.
 sidebar:
-  order: 4
+  order: 9
 ---
 
 `executor: openclaw` is a first-class, fully supported executor — if you

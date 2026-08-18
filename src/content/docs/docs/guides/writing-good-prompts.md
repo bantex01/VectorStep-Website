@@ -2,7 +2,7 @@
 title: Writing good prompts
 description: How to structure a prompt_template — what belongs in the prompt versus the agent, the output contract, and referencing prior-step data without breaking things.
 sidebar:
-  order: 2
+  order: 3
 ---
 
 An agent's `soul.md` (see [Writing good agents](/docs/guides/writing-good-agents/))
