@@ -93,15 +93,16 @@ source .venv/bin/activate && uvicorn src.main:app --reload --port 8000
 
 ## 3. Add a pipeline
 
-Pipelines are YAML files in `service/pipelines/`; reusable steps live in
-`service/steps/`. Create both of these — a complete pipeline built for the
+Still inside `~/.vectorstep/service/` from step 2. Pipelines are YAML files
+in `pipelines/`; reusable steps live in `steps/` — both empty on a fresh
+install. Create both of the files below — a complete pipeline built for the
 agent you just made, with no MCP tools required, since
 `generic-pipeline-step` reasons from the alert payload alone. (The samples
-bundled in `samples/pipelines/` and `samples/steps/` are real production
-examples wired to OpenClaw and external tools like Jira and Confluence —
-worth exploring later, but not a fit for this walkthrough.)
+bundled in `samples/pipelines/` and `samples/steps/`, one level up, are real
+production examples wired to OpenClaw and external tools like Jira and
+Confluence — worth exploring later, but not a fit for this walkthrough.)
 
-`steps/first-line-triage.yaml`:
+Create `steps/first-line-triage.yaml`:
 
 ```yaml
 name: first-line-triage
@@ -132,7 +133,7 @@ prompt_template: |
   }
 ```
 
-`pipelines/alert-triage.yaml`:
+Create `pipelines/alert-triage.yaml`:
 
 ```yaml
 name: alert-triage
