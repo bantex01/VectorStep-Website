@@ -2,7 +2,7 @@
 title: Testing
 description: How the test suite is organised, how to run it against SQLite or Postgres, and what CI runs on every push.
 sidebar:
-  order: 4
+  order: 5
 ---
 
 Unit tests cover the pure-function logic: pipeline resolver matching, verifier

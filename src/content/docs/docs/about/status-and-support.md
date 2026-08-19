@@ -18,7 +18,7 @@ pull requests get read, but not always quickly and not always the same week.
 ## Versions and releases
 
 Tagging a release (`vX.Y.Z`) is what publishes a container image — see
-[Deployment](/docs/operations/deployment/) for pulling published images and
+[Docker](/docs/installation/docker/) for pulling published images and
 running them, and each repo's `RELEASING.md` for the release process itself.
 An `edge` tag tracks the default branch; `latest` and the semver tag track
 the most recent release. An untagged local build reports `dev`.

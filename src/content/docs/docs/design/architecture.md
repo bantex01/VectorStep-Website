@@ -2,7 +2,7 @@
 title: Architecture
 description: How VectorStep is put together — project overview, tech stack, directory layout, and the request flow from webhook to agent execution.
 sidebar:
-  order: 2
+  order: 3
 ---
 
 This page is the map: what VectorStep is, what it's built with, how the codebase
@@ -38,7 +38,7 @@ purpose.
   output validation
 - **SQLAlchemy (async)** — pipeline run storage; SQLite (`aiosqlite`) for
   zero-infra local dev, PostgreSQL (`asyncpg`) recommended for production —
-  see [Installation](/docs/getting-started/installation/#sqlite-vs-postgres)
+  see [Deployment](/docs/operations/deployment/#database)
 - **httpx** — async HTTP client for webhook executor and notification
   delivery
 - **websockets** — async WebSocket client for OpenClaw and VectorStep Gateway

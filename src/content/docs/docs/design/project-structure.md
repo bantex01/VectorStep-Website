@@ -2,12 +2,12 @@
 title: Project structure
 description: The full repository layout of the VectorStep engine repo — every directory and what lives in it.
 sidebar:
-  order: 3
+  order: 4
 ---
 
 The full tree below covers everything under `samples/` and `service/`. For a
 trimmed, two-level overview alongside the request-flow diagram, see
-[Architecture](/docs/concepts/architecture/).
+[Architecture](/docs/design/architecture/).
 
 ```
 samples/                      # Copy-and-adapt templates for new deployments (git controlled)

@@ -2,7 +2,7 @@
 title: Adding a schema change
 description: How to generate and review an Alembic migration when changing the ORM models.
 sidebar:
-  order: 5
+  order: 6
 ---
 
 Edit the model in `service/src/db/models.py`, then generate a revision from

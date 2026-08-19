@@ -1,16 +1,13 @@
 ---
-title: Installation & development setup
-description: The full setup reference for VectorStep and the VectorStep Gateway — dependencies, tests, and the SQLite-vs-Postgres choice.
+title: Linux
+description: From-source development setup for both services, plus a systemd path for a plain VM with no container runtime.
 sidebar:
-  order: 2
+  order: 4
 ---
 
-[Quick start](/docs/getting-started/quick-start/) gets a pair of services
-running fast. This page is the detailed reference to sit alongside it: the
-full Gateway quick start, the service's own development setup, how to run the
-test suite, and the one database decision you'll actually need to make.
+## Development setup
 
-## Gateway: full setup
+### Gateway
 
 ```bash
 # 1. Install dependencies
@@ -44,7 +41,7 @@ credentials and environment-specific agent definitions. Use
 For agent authoring (`agent.yaml`, `soul.md`, hot reload), see
 [Creating agents](/docs/gateway/agents/).
 
-## VectorStep service: development setup
+### VectorStep service
 
 ```bash
 cd service
@@ -69,17 +66,31 @@ curl -X POST "http://localhost:8000/webhook?source=generic" \
 Running the test suite, including the Postgres test lane, is covered on
 [Testing](/docs/design/testing/).
 
-## SQLite vs. Postgres
+### SQLite vs. Postgres
 
 The ORM layer (SQLAlchemy async) is dialect-agnostic — switching backends is
-a `database.url` change only, no code changes. Two supported backends:
-
-| Backend | URL | When to use |
-|---|---|---|
-| SQLite (`aiosqlite`) | `sqlite+aiosqlite:///./runs.db` | Local dev, zero infrastructure, single process |
-| PostgreSQL (`asyncpg`) | `postgresql+asyncpg://user:pass@host:5432/dbname` | Production — concurrent writers, real backup/replication story |
+a `database.url` change only, no code changes. SQLite (zero infrastructure)
+is right for this local setup; Postgres is for production.
 
 :::note
 For the full database setup, migration mechanism, and dedup-race hardening
-details, see [Deployment](/docs/operations/deployment/).
+details, see [Deployment](/docs/operations/deployment/#database).
 :::
+
+## Production (systemd)
+
+For a plain VM or instance without a container runtime, both repos ship
+systemd units and a step-by-step install guide under `deploy/systemd/`
+(`install.md`, `*.service`, `env.example`) — code in
+`/opt/vectorstep/<service>`, config in `/etc/vectorstep/<service>/`, state in
+`/var/lib/vectorstep/<service>/`, logs in `/var/log/vectorstep/<service>/`.
+Both units support `systemctl reload` (pipelines/steps for VectorStep,
+agents for the Gateway) without dropping the process; a code, dependency, or
+database change needs `systemctl restart`.
+
+## Where next
+
+- **[Deployment](/docs/operations/deployment/)** — the full `config.yaml`
+  reference and database/migration mechanics.
+- **[Docker](/docs/installation/docker/)** / **[Kubernetes](/docs/installation/kubernetes/)**
+  — containerized alternatives to both paths above.

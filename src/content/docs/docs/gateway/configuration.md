@@ -29,7 +29,7 @@ resolves to a path inside the container's ephemeral filesystem, so a
 recreated container regenerates its identity — including the operator
 token VectorStep was configured with — and the pairing breaks. Set
 `identity.path` explicitly to somewhere on your mounted `/data` volume (e.g.
-`/data/identity`). See [Deployment](/docs/operations/deployment/#docker) for
+`/data/identity`). See [Docker](/docs/installation/docker/) for
 the full container config.
 
 ## `limits`

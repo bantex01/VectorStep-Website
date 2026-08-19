@@ -27,10 +27,16 @@ export default defineConfig({
         }),
       ],
       sidebar: [
-        { label: 'Getting Started', items: [{ autogenerate: { directory: 'docs/getting-started' } }] },
-        { label: 'Tutorials', items: [{ autogenerate: { directory: 'docs/tutorials' } }] },
+        {
+          label: 'Getting Started',
+          items: [
+            { autogenerate: { directory: 'docs/getting-started' } },
+            { label: 'Tutorials', items: [{ autogenerate: { directory: 'docs/tutorials' } }] },
+          ],
+        },
         { label: 'Guides', items: [{ autogenerate: { directory: 'docs/guides' } }] },
         { label: 'Concepts', items: [{ autogenerate: { directory: 'docs/concepts' } }] },
+        { label: 'Installation', items: [{ autogenerate: { directory: 'docs/installation' } }] },
         { label: 'Pipelines', items: [{ autogenerate: { directory: 'docs/pipelines' } }] },
         { label: 'Sources & Executors', items: [{ autogenerate: { directory: 'docs/integrations' } }] },
         { label: 'UI & Insights', items: [{ autogenerate: { directory: 'docs/ui' } }] },
