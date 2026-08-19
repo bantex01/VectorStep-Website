@@ -46,8 +46,12 @@ than an API key. Once you're past this guide, [Tutorials](/docs/tutorials/build-
 walks through writing a real one.
 
 ```bash
-cp -r samples/agents/generic-pipeline-step agents/my-agent
+cp -r samples/agents/generic-pipeline-step agents/
 ```
+
+Copy it as-is, without renaming the directory — the Gateway requires
+`agent.yaml`'s `name:` field to match its containing directory exactly, and
+skips (with a logged error) any agent where they don't.
 
 The sample agent defaults to an Anthropic model, which is why that's the
 key exported below. The Gateway also supports OpenRouter, Google, Azure
@@ -104,8 +108,8 @@ name: first-line-triage
 description: First-line triage for a critical alert — no MCP tools required.
 executor: gateway
 executor_config:
-  agent: my-agent
-  session_key: "agent:my-agent:{{pipeline_run_id}}:{{current_step}}"
+  agent: generic-pipeline-step
+  session_key: "agent:generic-pipeline-step:{{pipeline_run_id}}:{{current_step}}"
 confidence_threshold: 0.60
 on_low_confidence: escalate
 prompt_template: |
@@ -141,7 +145,7 @@ steps:
     use: first-line-triage        # reusable step from your step library
     executor: gateway
     executor_config:
-      agent: my-agent
+      agent: generic-pipeline-step
     confidence_threshold: 0.75
     on_low_confidence: escalate   # below the bar, a human sees it instead
 ```
