@@ -85,9 +85,20 @@ Safe to run again later — it never overwrites an existing `config.yaml`.
 
 ```bash
 cd ~/.vectorstep/service
-# Service config: database, executors (paste the Gateway operator token here),
-# notification channels, calibration defaults — edit config.yaml
+```
 
+Open `config.yaml` and paste the operator token from step 1 into
+`executors.gateway.token`:
+
+```yaml
+executors:
+  gateway:
+    token: <paste the operator token here>
+```
+
+Then start it:
+
+```bash
 source .venv/bin/activate && uvicorn src.main:app --reload --port 8000
 ```
 
@@ -140,6 +151,8 @@ name: alert-triage
 description: First-line triage for critical alerts
 trigger:
   match: { source: alertmanager, severity: critical }
+  dedup:
+    enabled: false
 
 steps:
   - name: triage
@@ -150,6 +163,13 @@ steps:
     confidence_threshold: 0.75
     on_low_confidence: escalate   # below the bar, a human sees it instead
 ```
+
+`dedup.enabled: false` here is a quick-start convenience, not a general
+recommendation — the bundled test fixture has no unique fingerprint, so
+every replay hashes identical and would otherwise hit the (correct, and
+normally desirable) service-wide dedup window. See [Idempotency &
+deduplication](/docs/integrations/webhooks/#idempotency--deduplication) for
+how it works against real alert traffic.
 
 Reload without restarting:
 
