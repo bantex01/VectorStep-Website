@@ -11,7 +11,10 @@ triggered by a real webhook.
 
 ## Prerequisites
 
-- **Python 3.11+**
+- **macOS or Linux** (or **Windows via [WSL2](/docs/installation/windows/)**
+  — the commands below are bash scripts, so there's no native Windows path
+  yet)
+- **Python 3.11+**, `git`
 - An LLM provider API key (Anthropic, OpenRouter, Google, Azure OpenAI, or a
   local Ollama — the Gateway supports all of them)
 - Nothing else. Local development runs on SQLite with zero infrastructure;

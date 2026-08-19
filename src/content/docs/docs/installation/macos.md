@@ -17,6 +17,12 @@ for running this somewhere other than a dev machine, use
 [Docker](/docs/installation/docker/) or [Kubernetes](/docs/installation/kubernetes/)
 instead.
 
+## Prerequisites
+
+**Python 3.11+** and **`git`** — the one-liners below clone each repo and
+need both present on `PATH`; they'll fail with a clear message naming
+whichever is missing.
+
 ## Development setup
 
 ### Gateway
