@@ -25,6 +25,26 @@ Gateway's standalone introduction.
 ## Quick Start
 
 ```bash
+curl -sSL https://raw.githubusercontent.com/bantex01/VectorStep-Gateway/main/install-gateway.sh | bash
+```
+
+Then edit `~/.vectorstep-gateway/config.yaml` with your LLM provider keys,
+add a first agent under `agents/`, export your provider key, and start it:
+
+```bash
+cd ~/.vectorstep-gateway
+export ANTHROPIC_API_KEY=sk-ant-...
+source .venv/bin/activate && python -m gateway.main
+
+# Find your operator token (auto-generated on first run)
+cat ~/.vectorstep-gateway/identity/device-auth.json
+# Copy the 'operator' token — you'll need it for VectorStep's config
+```
+
+<details>
+<summary>What the one-liner does, or set it up by hand</summary>
+
+```bash
 # 1. Install dependencies
 python3 -m venv .venv
 source .venv/bin/activate
@@ -54,6 +74,8 @@ Both `config.yaml` and `agents/` are gitignored — they contain personal
 credentials and environment-specific agent definitions. Use
 `samples/config.yaml.example` as your starting point.
 :::
+
+</details>
 
 ## Directory Structure
 

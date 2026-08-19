@@ -22,6 +22,27 @@ instead.
 ### Gateway
 
 ```bash
+curl -sSL https://raw.githubusercontent.com/bantex01/VectorStep-Gateway/main/install-gateway.sh | bash
+```
+
+Then edit `~/.vectorstep-gateway/config.yaml` with your LLM provider keys,
+add a first agent under `agents/` (see [Creating agents](/docs/gateway/agents/)),
+export your provider key, and start it:
+
+```bash
+cd ~/.vectorstep-gateway
+export ANTHROPIC_API_KEY=sk-ant-...
+source .venv/bin/activate && python -m gateway.main
+
+# Find your operator token (auto-generated on first run)
+cat ~/.vectorstep-gateway/identity/device-auth.json
+# Copy the 'operator' token — you'll need it for VectorStep's config
+```
+
+<details>
+<summary>What the one-liner does, or set it up by hand</summary>
+
+```bash
 # 1. Install dependencies
 python3 -m venv .venv
 source .venv/bin/activate
@@ -50,19 +71,19 @@ Both `config.yaml` and `agents/` are gitignored — they contain personal
 credentials and environment-specific agent definitions. Use
 `samples/config.yaml.example` as your starting point.
 
-For agent authoring (`agent.yaml`, `soul.md`, hot reload), see
-[Creating agents](/docs/gateway/agents/).
+</details>
 
 ### VectorStep service
 
 ```bash
-cd service
-python -m venv .venv
-source .venv/bin/activate
-pip install -r ../requirements.txt   # requirements.txt lives at the repo root
+curl -sSL https://raw.githubusercontent.com/bantex01/VectorStep/main/install-service.sh | bash
+```
 
-# Run service
-uvicorn src.main:app --reload --port 8000
+Then start it and try a test webhook:
+
+```bash
+cd ~/.vectorstep/service
+source .venv/bin/activate && uvicorn src.main:app --reload --port 8000
 
 # Test webhook (alertmanager)
 curl -X POST "http://localhost:8000/webhook?source=alertmanager" \
@@ -74,6 +95,21 @@ curl -X POST "http://localhost:8000/webhook?source=generic" \
   -H "Content-Type: application/json" \
   -d @tests/fixtures/generic_new_order.json
 ```
+
+<details>
+<summary>What the one-liner does, or set it up by hand</summary>
+
+```bash
+cd service
+python -m venv .venv
+source .venv/bin/activate
+pip install -r ../requirements.txt   # requirements.txt lives at the repo root
+
+# Run service
+uvicorn src.main:app --reload --port 8000
+```
+
+</details>
 
 Running the test suite, including the Postgres test lane, is covered on
 [Testing](/docs/design/testing/).

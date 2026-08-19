@@ -25,12 +25,15 @@ request. VectorStep never sees intermediate tool calls — it orchestrates, the
 Gateway executes.
 
 ```bash
-git clone <your-fork>/VectorStep-Gateway && cd VectorStep-Gateway
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+curl -sSL https://raw.githubusercontent.com/bantex01/VectorStep-Gateway/main/install-gateway.sh | bash
+```
 
-# Config template documents every option
-cp samples/config.yaml.example config.yaml
+This clones the Gateway into `~/.vectorstep-gateway/`, creates a virtualenv,
+installs dependencies, and copies the config template. Safe to run again
+later — it never overwrites an existing `config.yaml` or `agents/`.
+
+```bash
+cd ~/.vectorstep-gateway
 # Edit config.yaml — set your LLM provider keys and any MCP servers
 
 # Create a first agent
@@ -38,7 +41,7 @@ mkdir -p agents/my-agent
 # Add agent.yaml and soul.md — see the Gateway docs
 
 export ANTHROPIC_API_KEY=sk-ant-...
-python -m gateway.main
+source .venv/bin/activate && python -m gateway.main
 ```
 
 On first run the Gateway generates an identity and an operator token:
@@ -54,15 +57,19 @@ environment-specific agent definitions.
 ## 2. Start the VectorStep service
 
 ```bash
-git clone <your-fork>/VectorStep && cd VectorStep/service
-python -m venv .venv && source .venv/bin/activate
-pip install -r ../requirements.txt   # requirements.txt lives at the repo root
+curl -sSL https://raw.githubusercontent.com/bantex01/VectorStep/main/install-service.sh | bash
+```
 
+This clones VectorStep into `~/.vectorstep/`, with the venv and config set up
+inside `~/.vectorstep/service/` (SQLite by default — no Postgres prompt).
+Safe to run again later — it never overwrites an existing `config.yaml`.
+
+```bash
+cd ~/.vectorstep/service
 # Service config: database, executors (paste the Gateway operator token here),
-# notification channels, calibration defaults
-cp ../samples/config.yaml.example config.yaml
+# notification channels, calibration defaults — edit config.yaml
 
-uvicorn src.main:app --reload --port 8000
+source .venv/bin/activate && uvicorn src.main:app --reload --port 8000
 ```
 
 ## 3. Add a pipeline

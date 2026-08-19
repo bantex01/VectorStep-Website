@@ -7,10 +7,13 @@ sidebar:
 ---
 
 [Quick start](/docs/getting-started/quick-start/) gets a pair of services
-running fast, with two one-liner paths (CLI install, or Docker). This
-section is the full reference to sit alongside it — everything from a local
-dev setup through to a production Kubernetes cluster, organized by how you
-actually intend to run this rather than crammed into one page.
+running fast with one command each — `install-gateway.sh` and
+`install-service.sh`. A Docker one-liner is planned but not yet available;
+until then, [Docker](/docs/installation/docker/) covers pulling the published
+images by hand. This section is the full reference to sit alongside quick
+start — everything from a local dev setup through to a production Kubernetes
+cluster, organized by how you actually intend to run this rather than
+crammed into one page.
 
 - **[Docker](/docs/installation/docker/)** — pull the published images,
   `docker run` or `docker compose` for local evaluation.
