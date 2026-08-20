@@ -6,7 +6,9 @@ tags: [origin-story, agentic-ai, gateway]
 excerpt: OpenClaw is a brilliant personal AI assistant. Using it for real work made it obvious why "brilliant personal assistant" and "safe to run against production" are two different design problems - and that the second one didn't have an open-source answer yet.
 ---
 
-I was a bit late to the party with [OpenClaw](https://myclaw.ai/) but arrived unfashionably late around March this year. When I started reading about implementing a personal AI assistant I couldn't necessarily see what I might need a fleet of agents for in my personal life. I have no interest in having AI check-in for flights (I don't go on many flights these days) or produce a morning briefing (what would AI brief me on?) but I have for many years tried to find ingenious ways to try and make my weekend hobby of sports betting profitable by delving into stats using tools such as Splunk and streaming odds into grafana cloud and analysing from there. What interested me wasn't really the betting itself, but the idea of building a system that could continuously watch a bunch of data, spot something interesting and then help me decide what to do with it.
+I was a bit late to the party with [OpenClaw](https://myclaw.ai/) but arrived unfashionably late around March this year. When I started reading about implementing a personal AI assistant I couldn't necessarily see what I might need a fleet of agents for in my personal life. I have no interest in having AI check-in for flights (I don't go on many flights these days) or produce a morning briefing (what would AI brief me on?) but I have for many years tried to find ingenious ways to try and make my weekend hobby of sports betting profitable by delving into stats using tools such as Splunk and streaming odds into grafana cloud and analysing from there. 
+
+What interested me wasn't really the betting itself, but the idea of building a system that could continuously watch a bunch of data, spot something interesting and then help me decide what to do with it.
 
 So it was this use-case that got me tinkering with Openclaw. I liked the idea of agents just continually keeping context and essentially getting to know you and keeping a memory. But in practice, in my opinion, memory management and the idea that your personal agents just "remember" and "know" stuff about you is still some way off.
 
@@ -40,7 +42,7 @@ I started thinking about each step in an AI workflow as something that shouldn't
 
 I originally just asked the LLM to report back its own confidence on a task and, in my initial testing, that worked surprisingly well, but I should add here, I think that's because I was very deliberate about the scope of the step and the very specific instructions for the agent (prompt) and its very limited soul (essentially what you tell your agent it can/can't do). 
 
-For now, i'll leave that subject there but I do have some further articles and guides on this subject in the dcos site so please have a look if you want to know more about writing good agents and prompts.
+For now, i'll leave that subject there but I do have some further articles and guides on this subject in the docs site so please have a look if you want to know more about writing good agents and prompts.
 
 But asking an LLM to mark its own homework is fraught with risk, as you can imagine, so this mechanism evolved. In some cases you might want independent verification. In others you might need evidence from a known source, a deterministic check, or some understanding of how well the agent has performed historically. 
 
@@ -114,7 +116,7 @@ Take a fairly simple example from the sort of work I've spent most of my career 
 
 The first step might gather information from several sources and produce a triage report.
 
-At rung zero, that's all we're doing. The agent investigates and gives us an answer.
+Without any gating, that's all we're doing. The agent investigates and gives us an answer.
 
 Now we can start adding some gates.
 
