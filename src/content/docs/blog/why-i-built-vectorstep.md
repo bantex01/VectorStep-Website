@@ -68,6 +68,8 @@ The Truth Vector is currently made up of five signals. They each answer a slight
 
 In my opinion, I don't think any one of these is necessarily enough on its own.
 
+![The Truth Vector — five independent signals feeding into a gate](./images/truth-vector.jpg)
+
 An agent can be highly confident and wrong. A verifier can be wrong. Evidence can be incomplete or misleading. A deterministic check can tell you that something meets a particular rule without telling you whether the overall answer makes sense.
 
 The idea is that these signals give me different ways of looking at the same decision.
