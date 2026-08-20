@@ -54,15 +54,15 @@ The first version was very simple. The agent did a piece of work and told me how
 
 The Truth Vector is currently made up of five signals. They each answer a slightly different question about the output of a step.
 
-**Confidence** — how confident is the agent in the result it has produced?
+**Confidence** - how confident is the agent in the result it has produced?
 
-**Verification** — can another process independently check the result?
+**Verification** - can another process independently check the result?
 
-**Grounding** — can the important claims in the result be backed up by actual evidence?
+**Grounding** - can the important claims in the result be backed up by actual evidence?
 
-**Deterministic checks** — does the output pass rules that don't require another LLM to make a judgement?
+**Deterministic checks** - does the output pass rules that don't require another LLM to make a judgement?
 
-**Calibration** — does this particular agent's confidence actually bear any relationship to how often it is right?
+**Calibration** - does this particular agent's confidence actually bear any relationship to how often it is right?
 
 In my opinion, I don't think any one of these is necessarily enough on its own.
 
